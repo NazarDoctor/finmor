@@ -29,7 +29,7 @@ test.describe ('перевірка логіну',() => {
         await expect(exampleInfo).toBeVisible();
         await expect(exampleInfo).toHaveText('admin@demo.com / admin123user@demo.com / user123');
         const enterButton=page.getByTestId('login-submit-button');
-        await expect(enterButton).toHaveText('Увійтиbb');
+        await expect(enterButton).toHaveText('Увійти');
         await expect(enterButton).toBeEnabled();
         await Promise.all([page.waitForURL('https://finmore.netlify.app'),enterButton.click(),]);
         await expect(page).toHaveTitle('Повнофункціональний фінансовий менеджер');
