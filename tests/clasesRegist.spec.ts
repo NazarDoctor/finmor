@@ -13,5 +13,5 @@ test.describe ('перевірка реєстрації',() => {
 
    test ('реєстрація з валідними полями', async({page}) => 
     {
-          await registrationPage.checkregisterButton()  });
+          await registrationPage.checkRegisterButton()  });
 });
