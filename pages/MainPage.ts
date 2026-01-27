@@ -15,7 +15,16 @@ export class MainPage {
 
     //sidebar//
     readonly sidebarMenu:Locator;
+    readonly dashboardNav:Locator;
+    readonly transactionNav:Locator;
+    readonly categoriesNav:Locator;
+    readonly budgetNav:Locator;
+    readonly accountsNav:Locator;
+    readonly reportsNav:Locator;
+    readonly analyticsNav:Locator;
+    readonly settingsNav:Locator;
     //трансакції//
+    readonly transactionsPage:Locator;
     
 
     //категорії//
@@ -45,6 +54,14 @@ export class MainPage {
         this.incomeTitile=page.getByTestId('income-categories-title');
         this.expenceTitile=page.getByTestId('expense-categories-title');
         this.transactionsPage=page.getByTestId('transactions-page-title');
+        this.dashboardNav=page.getByTestId('nav-dashboard');
+        this.transactionNav=page.getByTestId('nav-transactions');
+        this.categoriesNav=page.getByTestId('nav-categories');
+        this.budgetNav=page.getByTestId('nav-budgets');
+        this.accountsNav=page.getByTestId('nav-accounts');
+        this.reportsNav=page.getByTestId('nav-reports');
+        this.analyticsNav=page.getByTestId('nav-analytics');
+        this.settingsNav=page.getByTestId('nav-settings');
         
 
         
@@ -127,8 +144,39 @@ export class MainPage {
         await expect(this.transactionsPage).toBeVisible();
         await expect(this.transactionsPage).toHaveText('Транзакції');
     }
+    async checkDashboardNav(){
+        await expect(this.dashboardNav).toBeVisible();
+        await expect(this.dashboardNav).toHaveText('Панель управління');
+    }
+    async checkTransactionNav(){
+        await expect(this.transactionNav).toBeVisible();
+        await expect(this.transactionNav).toHaveText('Транзакції');
+    }
+    async checkCategoriesNav(){
+        await expect(this.categoriesNav).toBeVisible();
+        await expect(this.categoriesNav).toHaveText('Категорії');
+    }
+    async checkBudgetNav(){
+        await expect(this.budgetNav).toBeVisible();
+        await expect(this.budgetNav).toHaveText('Бюджети');
+    }
+    async checkAccountsNav(){
+        await expect(this.accountsNav).toBeVisible();
+        await expect(this.accountsNav).toHaveText('Рахунки');
+    }
+    async checkReportsNav(){
+        await expect(this.reportsNav).toBeVisible();
+        await expect(this.reportsNav).toHaveText('Звіти');
+    }
+    async checkAnalyticsNav(){
+        await expect(this.analyticsNav).toBeVisible();
+        await expect(this.analyticsNav).toHaveText('Аналітика');
+    }
+    async checkSettingNav(){
+        await expect(this.settingsNav).toBeVisible();
+        await expect(this.settingsNav).toHaveText('Налаштування');
+    }
 
-    
 
 
      
