@@ -73,8 +73,14 @@ export class RegistrationPage {
         await expect(this.createRegistration).toBeVisible();
         await expect(this.createRegistration).toHaveText('Створіть новий обліковий запис');
     }
+    async checkcEnterFullName (){
+        await expectVisible(this.enterFullName, 'Іван Петренко')
+        
+    }
+
     async fillFullName(value: string) {
     await fillElement(this.enterFullName, value, 'ПІ користувача')
+    
     
     }
     async checkRegistrationEmail(){
