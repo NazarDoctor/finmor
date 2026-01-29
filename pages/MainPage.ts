@@ -1,4 +1,5 @@
-import{test, expect, Page, Locator} from '@playwright/test';
+import{expect, Page, Locator} from '@playwright/test';
+import { expectVisible } from '../utils/globalMetods';
 export class MainPage {
     //основні елементи сторінки//
     readonly page:Page;
@@ -12,6 +13,11 @@ export class MainPage {
     readonly userEmail:Locator;
     readonly userSettings:Locator;
     readonly logoutButton:Locator;
+    readonly totallIncome:Locator;
+    readonly totallExpenses:Locator;
+    readonly balanceCard:Locator;
+    readonly recentTransactions:Locator;
+    readonly budgetOverview:Locator;
 
     //sidebar//
     readonly sidebarMenu:Locator;
@@ -62,7 +68,11 @@ export class MainPage {
         this.reportsNav=page.getByTestId('nav-reports');
         this.analyticsNav=page.getByTestId('nav-analytics');
         this.settingsNav=page.getByTestId('nav-settings');
-        
+        this.totallIncome=page.getByTestId('total-income-card-title');
+        this.totallExpenses=page.getByTestId('total-expenses-card');
+        this.balanceCard=page.getByTestId('balance-card');
+        this.recentTransactions=page.getByTestId('recent-transactions-widget');
+        this.budgetOverview=page.getByTestId('budget-overview-widget');
 
         
 
@@ -176,6 +186,27 @@ export class MainPage {
         await expect(this.settingsNav).toBeVisible();
         await expect(this.settingsNav).toHaveText('Налаштування');
     }
+    async checkTotallIncome(){
+        await expectVisible (this.totallIncome,'Загальний дохід')
+        await expect(this.totallIncome).toHaveText('Загальний дохід');
+    }
+    async checkTotallExpenses(){
+        await expectVisible (this.totallExpenses,'Загальні витрати')
+        await expect(this.totallExpenses).toHaveText('Загальні витрати');
+    }
+    async checkBalanceCard(){
+        await expectVisible (this.balanceCard,'Баланс')
+        await expect(this.balanceCard).toHaveText('Баланс');
+    }
+    async checkRecentTransactions(){
+        await expectVisible (this.recentTransactions,'Останні транзакції')
+        await expect(this.recentTransactions).toHaveText('Останні транзакції');
+    }
+    async checkBudgetOverview(){
+        await expectVisible (this.budgetOverview,'Огляд бюджетів')
+        await expect(this.budgetOverview).toHaveText('Огляд бюджетів');
+    }
+
 
 
 

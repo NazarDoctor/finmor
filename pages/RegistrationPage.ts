@@ -1,4 +1,5 @@
-import{test, expect, Page, Locator} from '@playwright/test';
+import{ expect, Page, Locator} from '@playwright/test';
+import { expectVisible, fillElement, сlickElement } from '../utils/globalMetods';
 export class RegistrationPage {
     readonly page:Page;
     readonly blueicon:Locator;
@@ -60,8 +61,9 @@ export class RegistrationPage {
     }
     async checkRegisterButton (){
         await expect(this.registerButton).toHaveText('Зареєструватися');
+        await expectVisible(this.registerButton, 'кнопка реєстрації')
         await expect(this.registerButton).toBeEnabled();
-        await await this.registerButton.click();
+    
     }
     async checkRegistrationText(){
         await expect(this.registrationText).toBeVisible();
@@ -72,9 +74,8 @@ export class RegistrationPage {
         await expect(this.createRegistration).toHaveText('Створіть новий обліковий запис');
     }
     async fillFullName(value: string) {
-    await this.enterFullName.fill(value);
-    await expect(this.enterFullName).toHaveValue(value);
-    await expect(this.enterFullName).toHaveValue(value);
+    await fillElement(this.enterFullName, value, 'ПІ користувача')
+    
     }
     async checkRegistrationEmail(){
         await expect(this.registrationEmail).toBeVisible();
@@ -83,8 +84,8 @@ export class RegistrationPage {
     }
     async fillEnterEmailRegister(value: string){
         await expect(this.enterEmailRegister).toBeVisible();
-        await (this.enterEmailRegister).fill(value);
-        await expect(this.enterEmailRegister).toHaveValue (value);
+        await fillElement (this.enterEmailRegister, value, 'емейл реєстрації')
+        
 
     }
     async checkRegistrationPassword(){
@@ -93,17 +94,15 @@ export class RegistrationPage {
     }
     async fillEnterRegistrPaswrod(value: string){
         await expect(this.enterRegistrPaswrod).toBeVisible();
-        await (this.enterRegistrPaswrod).fill('Testing');
-        await expect(this.enterRegistrPaswrod).toHaveValue ('Testing');
+        await fillElement (this.enterRegistrPaswrod, value, 'пароль')
     }
     async checkRepeatPassword(){
         await expect(this.repeatPassword).toBeVisible();
         await expect(this.repeatPassword).toHaveText('Підтвердження паролю');
     }
-    async fillEneterRepeatPaswrod (){
-         await expect(this.eneterRepeatPaswrod).toBeVisible();
-        await (this.eneterRepeatPaswrod).fill('Testing');
-        await expect(this.eneterRepeatPaswrod).toHaveValue ('Testing');
+    async fillEneterRepeatPaswrod (value: string){
+        await expect(this.eneterRepeatPaswrod).toBeVisible();
+        await fillElement (this.eneterRepeatPaswrod, value, 'Підтвердження паролю')
     }
     async checkMainCurrency(){
         await expect(this.mainCurrency).toBeVisible();
@@ -119,9 +118,16 @@ export class RegistrationPage {
         await expect(this.enenterExistedAccount).toHaveText('Увійти');
     }
     async checkRegisterSubmit(){
-        await expect(this.registerSubmit).toBeVisible();
+        await expectVisible (this.registerSubmit, 'кнопка реєстрації');
         await expect(this.registerSubmit).toHaveText('Зареєструватися');
     }
+    async clickRegisterButton() {
+    await сlickElement(this.registerButton, 'кнопка реєстрації');
+    }
+    async clickRegisterSubmit(){
+        await сlickElement(this.registerSubmit, 'Зареєструватись');
+    }
+
 
 
 
