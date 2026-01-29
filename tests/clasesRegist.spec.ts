@@ -44,6 +44,7 @@ test.describe ('перевірка реєстрації',() => {
           //перевірка після реєстрації//
           await await page.waitForURL('https://finmore.netlify.app');
           await expect(page).toHaveTitle('Повнофункціональний фінансовий менеджер');
+          await mainPage.checkMainlogo();
           
 
 

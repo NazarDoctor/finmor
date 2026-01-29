@@ -1,5 +1,5 @@
 import{ expect, Page, Locator} from '@playwright/test';
-import { expectVisible, fillElement, сlickElement } from '../utils/globalMetods';
+import { checkAttribute, expectVisible, fillElement, сlickElement } from '../utils/globalMetods';
 export class RegistrationPage {
     readonly page:Page;
     readonly blueicon:Locator;
@@ -24,7 +24,7 @@ export class RegistrationPage {
 
     constructor(page:Page) {
         this.page=page
-        this.blueicon=page.locator('div.bg-blue-600')
+        this.blueicon=page.locator('svg.lucide-user-plus')
         this.registerForm = page.getByTestId('register-form');
         this.registrationNameText = this.registerForm.getByText("Повне ім'я");
         this.registerButton=page.getByTestId('switch-to-register-button');
@@ -36,7 +36,7 @@ export class RegistrationPage {
         this.registrationPassword=this.registerForm.getByText('Пароль');
         this.enterRegistrPaswrod=page.getByPlaceholder('Мінімум 6 символів');
         this.repeatPassword=this.registerForm.getByText('Підтвердження паролю');
-        this.eneterRepeatPaswrod=page.getByPlaceholder('Мінімум 6 символів');
+        this.eneterRepeatPaswrod=page.getByPlaceholder('Повторіть пароль');
         this.mainCurrency=this.registerForm.getByText('Основна валюта');
         this.questionAccount=page.getByText('Вже маєте обліковий запис? Увійти');
         this.enenterExistedAccount=page.getByTestId('switch-to-login-button');
@@ -49,6 +49,7 @@ export class RegistrationPage {
     }
     async checkBlueIcon(){
         await expect(this.blueicon).toBeVisible();
+        await checkAttribute(this.blueicon, 'width', '24', 'ширина' );
 
     }
     async checkRegistraionForm (){
