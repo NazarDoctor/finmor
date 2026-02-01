@@ -2,15 +2,24 @@ import{test, expect, Page} from '@playwright/test';
 import { BasePage } from '../pages/BasePage';
 import { RegistrationPage } from '../pages/RegistrationPage';
 import { MainPage } from '../pages/MainPage';
+import { registrationData } from './dataTest/registrationData';
+import { generateUser, getValidUserFromJson } from '../utils/userRegistration';
 test.describe ('перевірка реєстрації',() => {
     let basepage:BasePage;
     let registrationPage:RegistrationPage;
     let mainPage:MainPage;
+    const user=getValidUserFromJson();
+    
+    
+    //const user=generateUser();
+    //const uniqueUser = `testuser_${Date.now()}`;
+    //const uniqueEmail = `l_nrpi1+${Date.now()}@i.ua`;
     test.beforeEach(async ({page}) => {
         basepage=new BasePage(page);
         registrationPage= new RegistrationPage(page); 
         mainPage= new MainPage(page);
         await basepage.goto();
+
 
     } )
 
@@ -27,15 +36,13 @@ test.describe ('перевірка реєстрації',() => {
           await registrationPage.checkRegistrationText();
           await registrationPage.checkcEnterFullName();
           //введення данних для реєстрації//
-          const uniqueUser = `testuser_${Date.now()}`;
-          await registrationPage.fillFullName(uniqueUser);
-          const uniqueEmail = `l_nrpi1+${Date.now()}@i.ua`;
+          await registrationPage.fillFullName(user.fullName);
           await registrationPage.checkRegistrationEmail();
-          await registrationPage.fillEnterEmailRegister(uniqueEmail);
+          await registrationPage.fillEnterEmailRegister(user.email);
           await registrationPage.checkRegistrationPassword();
-          await registrationPage.fillEnterRegistrPaswrod('Testing');
+          await registrationPage.fillEnterRegistrPaswrod(registrationData.password);
           await registrationPage.checkRepeatPassword();
-          await registrationPage.fillEneterRepeatPaswrod('Testing');
+          await registrationPage.fillEneterRepeatPaswrod(registrationData.password);
           await registrationPage.checkMainCurrency();
           await registrationPage.checkquestionAccount();
           await registrationPage.checkEnenterExistedAccount();

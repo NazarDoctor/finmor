@@ -1,4 +1,5 @@
 import{expect, Page, Locator} from '@playwright/test';
+import { сlickElement } from '../utils/globalMetods';
 export class BasePage {
     readonly page:Page;
     readonly enter:Locator;
@@ -6,6 +7,7 @@ export class BasePage {
     readonly emailAdress:Locator;
     readonly enterEmail:Locator;
     readonly enterPassword:Locator;
+    readonly enterButton:Locator;
     
 
     constructor(page:Page) {
@@ -15,6 +17,7 @@ export class BasePage {
         this.emailAdress=page.getByTestId('login-form');
         this.enterEmail=page.getByPlaceholder('your@email.com');
         this.enterPassword=page.getByPlaceholder('Введіть пароль');
+        this.enterButton=page.getByTestId('login-submit-button');
 
 
         
@@ -35,19 +38,30 @@ export class BasePage {
      }
      async checkEmailAdress(){
         await expect(this.emailAdress).toBeVisible();
-        await expect(this.emailAdress).toHaveText('Email адресаПарольУвійти');
+        await expect(this.emailAdress).toHaveText('Email адреса');
      }
-     async checkenterEmail(){
+     
+     
+     async FillenterEmail(){
         await expect(this.enterEmail).toBeVisible();
-        await (this.enterEmail).fill('l_nrpi1+1@i.ua');
-        await expect(this.enterEmail).toHaveValue ('l_nrpi1+1@i.ua');
+        await (this.enterEmail).fill('user@demo.com');
+        await expect(this.enterEmail).toHaveValue ('user@demo.com');
      }
-     async checkEnterPassword(){
+     async FillEnterPassword(){
         await expect(this.enterPassword).toBeVisible();
-        await (this.enterPassword).fill('Testing');
-        await expect(this.enterPassword).toHaveValue ('Testing');
-
+        await (this.enterPassword).fill('user123');
+        await expect(this.enterPassword).toHaveValue ('user123');
      }
+     async checkEnterButton(){
+        await expect(this.enterButton).toBeVisible();
+        await expect(this.enterButton).toHaveText('Увійти');
+     }
+
+     async ClickEnterButton (){
+        await сlickElement(this.enterButton, 'Увійти');
+        
+     }
+
 
      
 

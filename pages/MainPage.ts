@@ -1,10 +1,11 @@
 import{expect, Page, Locator} from '@playwright/test';
-import { expectVisible } from '../utils/globalMetods';
+import { checkAttribute, expectVisible, fillElement, сlickElement } from '../utils/globalMetods';
 export class MainPage {
     //основні елементи сторінки//
     readonly page:Page;
     readonly userlogo:Locator;
     readonly mainlogo:Locator;
+    readonly appLogo:Locator;
     readonly secondMainlogo:Locator;
     readonly toggleSidebar:Locator;
     readonly themeToggle:Locator;
@@ -18,6 +19,7 @@ export class MainPage {
     readonly balanceCard:Locator;
     readonly recentTransactions:Locator;
     readonly budgetOverview:Locator;
+    readonly addTransactionButton:Locator;
 
     //sidebar//
     readonly sidebarMenu:Locator;
@@ -45,6 +47,7 @@ export class MainPage {
     constructor(page:Page) {
         this.page=page;
         this.userlogo=page.getByTestId('user-menu-trigger');
+        this.appLogo=page.getByTestId('app-logo');
         this.mainlogo=page.locator('text=FinanceManager');
         this.secondMainlogo=page.getByTestId('sidebar').getByTestId('app-title');
         this.sidebarMenu=page.getByTestId('main-navigation');
@@ -73,6 +76,7 @@ export class MainPage {
         this.balanceCard=page.getByTestId('balance-card');
         this.recentTransactions=page.getByTestId('recent-transactions-widget');
         this.budgetOverview=page.getByTestId('budget-overview-widget');
+        this.addTransactionButton=page.getByTestId('add-transaction-button');
 
         
 
@@ -87,10 +91,25 @@ export class MainPage {
     async checkUserLogo(expectedUserName: string) {
         await expect(this.userlogo).toBeVisible();
         await expect(this.userlogo).toHaveText(expectedUserName);
+     
+    }
+    async checkAppLogo()
+    {
+        await expect(this.appLogo).toBeEnabled();
+        await checkAttribute(this.appLogo, 'width', '24', 'ширина' );
     }
     async checkMainlogo(){
         await expect(this.mainlogo).toBeEnabled();
         await expect(this.mainlogo).toHaveText('FinanceManager');
+    }
+    async checkAddTransactionButton(){
+        await expect(this.addTransactionButton).toBeEnabled();
+        await expect(this.addTransactionButton).toHaveText('Додати транзакцію');
+        
+    }
+    async clickAddTransactionButton(){
+        await сlickElement(this.addTransactionButton, 'додати трансакцію');
+        
     }
     async checkSecondMainlogo(){
         await expect(this.secondMainlogo).toBeVisible();
@@ -101,12 +120,21 @@ export class MainPage {
     }
     async checkToggleSidebar(){
         await expect(this.toggleSidebar).toBeEnabled();
-        await expect(this.secondMainlogo).toBeVisible();
+        await expect(this.toggleSidebar).toBeVisible();
     }
+    async clickToggleSidebar(){
+        await сlickElement(this.toggleSidebar, 'сайдбар');
+    }
+
     async checkThemeToggle(){
         await expect(this.themeToggle).toBeEnabled();
         await expect(this.themeToggle).toBeVisible();
     }
+    async clickThemeToggle(){
+        await сlickElement(this.themeToggle, 'зміна теми');
+    }
+
+
      async checkUserDropDown(){
         await expect(this.userDropDown).toBeEnabled();
         await expect(this.userDropDown).toBeVisible();
@@ -158,33 +186,62 @@ export class MainPage {
         await expect(this.dashboardNav).toBeVisible();
         await expect(this.dashboardNav).toHaveText('Панель управління');
     }
+    async clickDashboardNav(){
+        await сlickElement (this.dashboardNav, 'панель управління');
+        
+    }
     async checkTransactionNav(){
         await expect(this.transactionNav).toBeVisible();
         await expect(this.transactionNav).toHaveText('Транзакції');
+    }
+    async clickTransactionNav(){
+        await сlickElement(this.transactionNav,'трансакції');
+        
     }
     async checkCategoriesNav(){
         await expect(this.categoriesNav).toBeVisible();
         await expect(this.categoriesNav).toHaveText('Категорії');
     }
+    async clickkCategoriesNav(){
+        await сlickElement(this.categoriesNav, 'категорії');
+    }
     async checkBudgetNav(){
         await expect(this.budgetNav).toBeVisible();
         await expect(this.budgetNav).toHaveText('Бюджети');
+    }
+    async clickkBudgetNav(){
+        await сlickElement(this.budgetNav, 'бюджет');
+        
     }
     async checkAccountsNav(){
         await expect(this.accountsNav).toBeVisible();
         await expect(this.accountsNav).toHaveText('Рахунки');
     }
+    async clickAccountsNav(){
+        await сlickElement(this.accountsNav,'рахунки');
+    }
     async checkReportsNav(){
         await expect(this.reportsNav).toBeVisible();
         await expect(this.reportsNav).toHaveText('Звіти');
+    }
+    async clickReportsNav(){
+        await сlickElement(this.reportsNav, 'Звіти');
     }
     async checkAnalyticsNav(){
         await expect(this.analyticsNav).toBeVisible();
         await expect(this.analyticsNav).toHaveText('Аналітика');
     }
+    async clickAnalyticsNav(){
+        await сlickElement(this.analyticsNav, 'Аналітика');
+        
+    }
     async checkSettingNav(){
         await expect(this.settingsNav).toBeVisible();
         await expect(this.settingsNav).toHaveText('Налаштування');
+    }
+    async clickSettingNav(){
+        await сlickElement(this.settingsNav,'Налаштування');
+        
     }
     async checkTotallIncome(){
         await expectVisible (this.totallIncome,'Загальний дохід')
