@@ -47,6 +47,21 @@ test.describe ('перевірка ЮІ основної сторінки',() =>
         await mainPage.checkAddTransactionButton();
         await mainPage.clickAddTransactionButton();
 
+
+        //Перевірка вікна нова трансакція
+        await transaction.checkTransactionForm();
+        await transaction.checkTransactionTitle();
+        await transaction.checkTransactionFormClose();
+        await transaction.checkexpense();
+        await transaction.checkincome();
+        await transaction.checkAmountInput();
+        await transaction.FillAmountInput();
+        await transaction.checkTransactionCategory();
+        await transaction.clickTransactionCategory();
+        await await transaction.selectTransactionCategory('Розваги');
+        await transaction.checkSelectedCategory('Розваги');
+        
+
       
 
 
