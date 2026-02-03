@@ -75,7 +75,7 @@ export class Transaction {
         await expect(this.amountInput).toBeVisible();
 
     }
-    async FillAmountInput() {
+    async fillAmountInput() {
         await fillElement (this.amountInput, '500', 'Сума');
 
     }

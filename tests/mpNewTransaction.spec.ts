@@ -15,6 +15,8 @@ test.describe ('перевірка ЮІ основної сторінки',() =>
         mainPage= new MainPage(page);
         transaction=new Transaction(page);
         await basepage.goto();
+        await basepage.login();
+       
     
 
     } )
@@ -25,18 +27,7 @@ test.describe ('перевірка ЮІ основної сторінки',() =>
 
         test ('перевірка ЮІ основної сторінки', async({page}) => 
     {
-        await page.goto('/');
-        //перевірка наявності необхідниї полів логіну//
-        await basepage.checkEnter();
-        await basepage.checkCredentials();
-        await basepage.checkEnterButton();
-    
-        //заповнення логін форм//
-        await basepage.FillenterEmail();
-        await basepage.FillEnterPassword();
-        await basepage.ClickEnterButton();
-
-
+     
         //завантаження головної сторінки//
         await page.waitForURL('https://finmore.netlify.app');
         await expect(page).toHaveTitle('Повнофункціональний фінансовий менеджер');
@@ -48,17 +39,17 @@ test.describe ('перевірка ЮІ основної сторінки',() =>
         await mainPage.clickAddTransactionButton();
 
 
-        //Перевірка вікна нова трансакція
+        //Перевірка вікна нова трансакція//
         await transaction.checkTransactionForm();
         await transaction.checkTransactionTitle();
         await transaction.checkTransactionFormClose();
         await transaction.checkexpense();
         await transaction.checkincome();
         await transaction.checkAmountInput();
-        await transaction.FillAmountInput();
+        await transaction.fillAmountInput();
         await transaction.checkTransactionCategory();
         await transaction.clickTransactionCategory();
-        await await transaction.selectTransactionCategory('Розваги');
+        await transaction.selectTransactionCategory('Розваги');
         await transaction.checkSelectedCategory('Розваги');
         
 

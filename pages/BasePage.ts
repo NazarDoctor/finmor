@@ -1,5 +1,6 @@
 import{expect, Page, Locator} from '@playwright/test';
 import { сlickElement } from '../utils/globalMetods';
+import { loginData } from '../tests/dataTest/loginData';
 export class BasePage {
     readonly page:Page;
     readonly enter:Locator;
@@ -57,10 +58,19 @@ export class BasePage {
         await expect(this.enterButton).toHaveText('Увійти');
      }
 
-     async ClickEnterButton (){
+     async clickEnterButton (){
         await сlickElement(this.enterButton, 'Увійти');
         
      }
+     async login() {
+     await this.checkEnter();
+     await this.checkCredentials();
+     await this.checkEnterButton();
+ 
+     await this.enterEmail.fill(loginData.user);
+     await this.enterPassword. fill(loginData.password);
+     await this.clickEnterButton();
+}
 
 
      
