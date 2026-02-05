@@ -1,7 +1,7 @@
 import{test, expect, Page} from '@playwright/test';
 test.describe ('перевірка логіну',() => {
 
-   test ('логін з валідними полями', async({page}) => 
+   test ('@smoke @regression логін з валідними полями', async({page}) => 
     {await page.goto('/');
         const logo=page.locator('div.bg-green-600');
         await expect(logo).toBeVisible();

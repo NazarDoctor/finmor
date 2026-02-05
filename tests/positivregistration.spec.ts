@@ -1,7 +1,7 @@
 import{test, expect, Page} from '@playwright/test';
 test.describe ('перевірка реєстрації',() => {
 
-   test ('реєстрація з валідними полями', async({page}) => 
+   test ('@smoke @regression реєстрація з валідними полями', async({page}) => 
     {await page.goto('/');
         const registerButton=page.getByTestId('switch-to-register-button');
         await expect(registerButton).toHaveText('Зареєструватися');
