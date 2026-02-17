@@ -103,6 +103,7 @@ test.describe.serial('WordPress Posts API - CRUD Tests', () => {
   expect(cls.length).toBeGreaterThan(0);
   });
   expect(typeof cls).toBe('string');
+  expect(typeof cls).toBe('string');
     //expect(post.class_list).toEqual(
     //expect.arrayContaining([
     //expect.stringMatching(/^post-\d+$/),    
