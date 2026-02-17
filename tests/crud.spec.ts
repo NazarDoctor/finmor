@@ -89,10 +89,35 @@ test.describe.serial('WordPress Posts API - CRUD Tests', () => {
     expect(post.content.protected).toBe(false);
     expect(Array.isArray(post.categories)).toBeTruthy();
     expect(Array.isArray(post.categories)).toBeTruthy();
+    expect(post.categories).toEqual(
+    expect.arrayContaining([expect.any(Number)])
+    );
+    expect(Array.isArray(post.class_list)).toBeTruthy();
     expect(post.categories).toContain(1);
     expect(post.tags).toEqual([]);
-
+ 
+    expect(Array.isArray(post.class_list)).toBeTruthy();
+ 
+  post.class_list.forEach((cls: string | any[]) => {
+  expect(typeof cls).toBe('string');
+  expect(cls.length).toBeGreaterThan(0);
   });
+  expect(typeof cls).toBe('string');
+    //expect(post.class_list).toEqual(
+    //expect.arrayContaining([
+    //expect.stringMatching(/^post-\d+$/),    
+    //expect.stringMatching(/^post$/),       
+    //expect.stringMatching(/^type-\w+$/),    
+    //expect.stringMatching(/^status-\w+$/),   
+   // expect.stringMatching(/^format-\w+$/),  
+    //expect.stringMatching(/^hentry$/),      
+    //expect.stringMatching(/^category-\w+$/)  
+  //])
+  //  );
+    });
+
+
+ 
 
 
   test('UPDATE - Should update an existing post', async ({ request }) => {
