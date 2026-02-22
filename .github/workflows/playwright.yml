@@ -25,16 +25,16 @@ jobs:
         name: playwright-report
         path: playwright-report/
         retention-days: 30
-         - name: Notify Microsoft Teams
+    - name: Notify Microsoft Teams
       if: always()
       run: |
-        curl -H "Content-Type: application/json" -d '{
-          "@type": "MessageCard",
-          "@context": "http://schema.org/extensions",
-          "summary": "Playwright Tests",
-          "themeColor": "0076D7",
-          "title": "Playwright Test Results",
-          "sections": [{
+      curl -H "Content-Type: application/json" -d '{
+      "@type": "MessageCard",
+      "@context": "http://schema.org/extensions",
+      "summary": "Playwright Tests",
+      "themeColor": "0076D7",
+      "title": "Playwright Test Results",
+      "sections": [{
             "facts": [
               { "name": "Repository", "value": "${{ github.repository }}" },
               { "name": "Branch", "value": "${{ github.ref_name }}" },
@@ -64,14 +64,14 @@ jobs:
         to: ${{ secrets.EMAIL_TO }}                   
         from: ${{ secrets.EMAIL_FROM }}               
         body: |
-          Playwright tests have finished.
+        Playwright tests have finished.
  
-          Repository: ${{ github.repository }}
-          Branch: ${{ github.ref_name }}
-          Status: ${{ job.status }}
+        Repository: ${{ github.repository }}
+        Branch: ${{ github.ref_name }}
+        Status: ${{ job.status }}
  
-          GitHub Run:
-          ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        GitHub Run:
+        ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         attachments: playwright-report.zip
 
 
