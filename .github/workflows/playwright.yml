@@ -28,6 +28,7 @@ jobs:
     - name: Notify Microsoft Teams
       if: always()
       run: |
+      echo "Tests finished"
       curl -H "Content-Type: application/json" -d '{
       "@type": "MessageCard",
       "@context": "http://schema.org/extensions",
