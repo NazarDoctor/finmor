@@ -27,8 +27,7 @@ jobs:
         retention-days: 30
     - name: Notify Microsoft Teams
       if: always()
-      run: |
-      echo "Tests finished"
+      run: echo "Tests finished"
       curl -H "Content-Type: application/json" -d '{
       "@type": "MessageCard",
       "@context": "http://schema.org/extensions",
