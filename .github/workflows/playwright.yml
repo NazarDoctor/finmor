@@ -27,14 +27,14 @@ jobs:
         retention-days: 30
     - name: Notify Microsoft Teams
       if: always()
-      run: echo "Tests finished"
-      curl -H "Content-Type: application/json" -d '{
-      "@type": "MessageCard",
-      "@context": "http://schema.org/extensions",
-      "summary": "Playwright Tests",
-      "themeColor": "0076D7",
-      "title": "Playwright Test Results",
-      "sections": [{
+      run: |
+        curl -H "Content-Type: application/json" -d '{
+          "@type": "MessageCard",
+          "@context": "http://schema.org/extensions",
+          "summary": "Playwright Tests",
+          "themeColor": "0076D7",
+          "title": "Playwright Test Results",
+          "sections": [{
             "facts": [
               { "name": "Repository", "value": "${{ github.repository }}" },
               { "name": "Branch", "value": "${{ github.ref_name }}" },
@@ -51,12 +51,12 @@ jobs:
             }]
           }]
         }' ${{ secrets.TEAMS_WEBHOOK_URL }}   
-       
+ 
     - name: Send report by email
       if: always()
       uses: dawidd6/action-send-mail@v3
       with:
-        server_address: ${{ secrets.SMTP_SERVER }}    
+        server_address: ${{ secrets.SMTP_SERVER }}     
         server_port: ${{ secrets.SMTP_PORT }}         
         username: ${{ secrets.SMTP_USERNAME }}        
         password: ${{ secrets.SMTP_PASSWORD }}        
@@ -64,14 +64,12 @@ jobs:
         to: ${{ secrets.EMAIL_TO }}                   
         from: ${{ secrets.EMAIL_FROM }}               
         body: |
-        Playwright tests have finished.
+          Playwright tests have finished.
  
-        Repository: ${{ github.repository }}
-        Branch: ${{ github.ref_name }}
-        Status: ${{ job.status }}
+          Repository: ${{ github.repository }}
+          Branch: ${{ github.ref_name }}
+          Status: ${{ job.status }}
  
-        GitHub Run:
-        ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          GitHub Run:
+          ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         attachments: playwright-report.zip
-
-
