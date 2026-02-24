@@ -74,36 +74,35 @@
   #           ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
   #         attachments: playwright-report.zip
 
-
-  name: Playwright Tests
+name: Playwright Tests
 on:
   push:
     branches: [ develop, main, master ]
   pull_request:
     branches: [ develop, main, master ]
- 
+
 jobs:
   test:
     timeout-minutes: 60
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
- 
+
     - uses: actions/setup-node@v4
       with:
         node-version: lts/*
- 
+
     - name: Install dependencies
       run: npm ci
- 
+
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
- 
+
     - name: Run Playwright tests
       id: run_tests
       run: npx playwright test --reporter=html,json
       continue-on-error: true
- 
+
     - name: Parse test results
       id: results
       if: always()
@@ -123,7 +122,7 @@ jobs:
         echo "skipped=$SKIPPED"     >> $GITHUB_OUTPUT
         echo "total=$TOTAL"         >> $GITHUB_OUTPUT
         echo "duration=$DURATION_SEC" >> $GITHUB_OUTPUT
- 
+
     - name: Set status meta
       id: meta
       if: always()
@@ -136,25 +135,25 @@ jobs:
           echo "label=PASSED"   >> $GITHUB_OUTPUT
         else
           echo "color=#E74C3C"  >> $GITHUB_OUTPUT
-          echo "emoji="       >> $GITHUB_OUTPUT
+          echo "emoji=❌"       >> $GITHUB_OUTPUT
           echo "label=FAILED"   >> $GITHUB_OUTPUT
         fi
- 
+
     - name: Zip Enterprise Report
       if: always()
       run: |
         if [ -d "test-results/enterprise-report" ]; then
           zip -r enterprise-report.zip test-results/enterprise-report/
-          echo " enterprise-report.zip created"
+          echo "✅ enterprise-report.zip created"
         elif [ -d "playwright-report" ]; then
           zip -r enterprise-report.zip playwright-report/
-          echo " playwright-report.zip created as fallback"
+          echo "✅ playwright-report.zip created as fallback"
         else
-          echo " No report folder found"
+          echo "⚠️ No report folder found"
           echo "<html><body><h2>No report generated</h2></body></html>" > no-report.html
           zip enterprise-report.zip no-report.html
         fi
- 
+
     - uses: actions/upload-artifact@v4
       if: always()
       with:
@@ -163,7 +162,7 @@ jobs:
           test-results/enterprise-report/
           playwright-report/
         retention-days: 30
- 
+
     - name: Notify Microsoft Teams
       if: always()
       run: |
@@ -190,14 +189,14 @@ jobs:
           }],
           "potentialAction": [{
             "@type": "OpenUri",
-            "name": "View GitHub Run",
+            "name": "🔍 View GitHub Run",
             "targets": [{
               "os": "default",
               "uri": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
             }]
           }]
         }' ${{ secrets.TEAMS_WEBHOOK_URL }}
- 
+
     - name: Send report by email
       if: always()
       uses: dawidd6/action-send-mail@v3
@@ -211,12 +210,12 @@ jobs:
         from: ${{ secrets.EMAIL_FROM }}
         content_type: text/html
         body: |
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<style>
+          <!DOCTYPE html>
+          <html lang="en">
+          <head>
+            <meta charset="UTF-8"/>
+            <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+            <style>
               * { box-sizing: border-box; margin: 0; padding: 0; }
               body {
                 font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
@@ -225,7 +224,7 @@ jobs:
                 color: #2c3e50;
               }
               .wrapper { max-width: 640px; margin: auto; }
- 
+
               /* ── HEADER ── */
               .header {
                 background: ${{ steps.meta.outputs.color }};
@@ -247,7 +246,7 @@ jobs:
                 font-weight: 700;
                 letter-spacing: 1px;
               }
- 
+
               /* ── STATS ROW ── */
               .stats {
                 background: #fff;
@@ -273,7 +272,7 @@ jobs:
               .failed  { color: #E74C3C; }
               .skipped { color: #F39C12; }
               .total   { color: #3498DB; }
- 
+
               /* ── INFO TABLE ── */
               .card {
                 background: #fff;
@@ -293,7 +292,7 @@ jobs:
               }
               td:last-child { font-weight: 600; color: #2c3e50; }
               tr:last-child td { border-bottom: none; }
- 
+
               /* ── BUTTON ── */
               .btn-wrap { background: #fff; text-align: center; padding: 0 24px 28px; }
               .btn {
@@ -307,7 +306,7 @@ jobs:
                 font-weight: 700;
                 letter-spacing: 0.3px;
               }
- 
+
               /* ── FOOTER ── */
               .footer {
                 background: #fff;
@@ -318,7 +317,7 @@ jobs:
                 font-size: 11px;
                 color: #bdc3c7;
               }
- 
+
               /* ── ATTACHMENT NOTE ── */
               .note {
                 background: #eaf4fb;
@@ -329,68 +328,68 @@ jobs:
                 font-size: 13px;
                 color: #2980b9;
               }
-</style>
-</head>
-<body>
-<div class="wrapper">
- 
+            </style>
+          </head>
+          <body>
+            <div class="wrapper">
+
               <!-- HEADER -->
-<div class="header">
-<h1>Playwright Test Report</h1>
-<div class="subtitle">${{ github.repository }} &bull; ${{ github.ref_name }}</div>
-<div class="badge">${{ steps.meta.outputs.emoji }} ${{ steps.meta.outputs.label }}</div>
-</div>
- 
+              <div class="header">
+                <h1>🎭 Playwright Test Report</h1>
+                <div class="subtitle">${{ github.repository }} &bull; ${{ github.ref_name }}</div>
+                <div class="badge">${{ steps.meta.outputs.emoji }} ${{ steps.meta.outputs.label }}</div>
+              </div>
+
               <!-- STATS -->
-<div class="stats">
-<div class="stat">
-<div class="num passed">${{ steps.results.outputs.passed }}</div>
-<div class="lbl">✅ Passed</div>
-</div>
-<div class="stat">
-<div class="num failed">${{ steps.results.outputs.failed }}</div>
-<div class="lbl">❌ Failed</div>
-</div>
-<div class="stat">
-<div class="num skipped">${{ steps.results.outputs.skipped }}</div>
-<div class="lbl">⏭️ Skipped</div>
-</div>
-<div class="stat">
-<div class="num total">${{ steps.results.outputs.total }}</div>
-<div class="lbl">🧮 Total</div>
-</div>
-</div>
- 
+              <div class="stats">
+                <div class="stat">
+                  <div class="num passed">${{ steps.results.outputs.passed }}</div>
+                  <div class="lbl">✅ Passed</div>
+                </div>
+                <div class="stat">
+                  <div class="num failed">${{ steps.results.outputs.failed }}</div>
+                  <div class="lbl">❌ Failed</div>
+                </div>
+                <div class="stat">
+                  <div class="num skipped">${{ steps.results.outputs.skipped }}</div>
+                  <div class="lbl">⏭️ Skipped</div>
+                </div>
+                <div class="stat">
+                  <div class="num total">${{ steps.results.outputs.total }}</div>
+                  <div class="lbl">🧮 Total</div>
+                </div>
+              </div>
+
               <!-- DETAILS -->
-<div class="card">
-<table>
-<tr><td>📁 Repository</td><td>${{ github.repository }}</td></tr>
-<tr><td>🌿 Branch</td><td>${{ github.ref_name }}</td></tr>
-<tr><td>🔁 Triggered by</td><td>${{ github.event_name }}</td></tr>
-<tr><td>👤 Actor</td><td>${{ github.actor }}</td></tr>
-<tr><td>📝 Commit SHA</td><td>${{ github.sha }}</td></tr>
-<tr><td>⏱️ Duration</td><td>${{ steps.results.outputs.duration }}s</td></tr>
-</table>
-</div>
- 
+              <div class="card">
+                <table>
+                  <tr><td>📁 Repository</td><td>${{ github.repository }}</td></tr>
+                  <tr><td>🌿 Branch</td><td>${{ github.ref_name }}</td></tr>
+                  <tr><td>🔁 Triggered by</td><td>${{ github.event_name }}</td></tr>
+                  <tr><td>👤 Actor</td><td>${{ github.actor }}</td></tr>
+                  <tr><td>📝 Commit SHA</td><td>${{ github.sha }}</td></tr>
+                  <tr><td>⏱️ Duration</td><td>${{ steps.results.outputs.duration }}s</td></tr>
+                </table>
+              </div>
+
               <!-- ATTACHMENT NOTE -->
-<div class="note">
-                Full HTML report is attached as <strong>enterprise-report.zip</strong> — unzip and open <code>index.html</code>
-</div>
- 
+              <div class="note">
+                📎 Full HTML report is attached as <strong>enterprise-report.zip</strong> — unzip and open <code>index.html
+              </div>
+
               <!-- BUTTON -->
-<div class="btn-wrap">
-<a class="btn" href="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}">
-                  View Full GitHub Run
-</a>
-</div>
- 
+              <div class="btn-wrap">
+                <a class="btn" href="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}">
+                  🔍 View Full GitHub Run
+                </a>
+              </div>
+
               <!-- FOOTER -->
-<div class="footer">
+              <div class="footer">
                 Generated by GitHub Actions &bull; ${{ github.workflow }} &bull; Run #${{ github.run_number }}
-</div>
- 
+              </div>
+
             </div>
-</body>
-</html>
-        attachments: enterprise-report.zip
+          </body>
+          </html>
+        attachments: enterprise-report.zip</code>
