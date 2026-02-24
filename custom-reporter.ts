@@ -28,6 +28,7 @@ export interface ReporterConfig {
   testCategories?: string[];
   slackWebhook?: string;
   emailRecipients?: string[];
+  language?: 'uk' | 'en' | 'pl';
 }
 
 interface TestData {
@@ -96,6 +97,7 @@ class EnterpriseReporter implements Reporter {
   private playwrightConfig?: FullConfig;
   private testsByProject: Map<string, TestData[]> = new Map();
   private testsByFile: Map<string, TestData[]> = new Map();
+  private translations: any;
 
   constructor(config: ReporterConfig = {}) {
     this.config = {
@@ -112,8 +114,132 @@ class EnterpriseReporter implements Reporter {
       primaryColor: '#667eea',
       showEnvironmentInfo: true,
       testCategories: ['smoke', 'regression', 'integration', 'e2e'],
+      language: 'uk',
       ...config,
     };
+    
+    this.translations = this.getTranslations(this.config.language!);
+  }
+  
+  private getTranslations(lang: string) {
+    const translations: any = {
+      uk: {
+        testReport: 'Звіт про виконання тестів',
+        summary: 'ПІДСУМКИ ВИКОНАННЯ ТЕСТІВ',
+        totalTests: 'Всього тестів',
+        passed: 'Пройдено',
+        failed: 'Провалено',
+        skipped: 'Пропущено',
+        flaky: 'Нестабільні',
+        duration: 'Тривалість',
+        passRate: 'Показник успішності',
+        overview: 'Огляд',
+        allTests: 'Всі тести',
+        failedTests: 'Провалені',
+        timeline: 'Часова шкала',
+        projects: 'По проектах',
+        statusDistribution: 'Розподіл за статусом',
+        durationAnalysis: 'Аналіз тривалості',
+        testsByCategory: 'Тести за категоріями',
+        passRateTrend: 'Тренд успішності',
+        topFilesByTests: 'Топ файлів за тестами',
+        slowestTests: 'Найповільніші тести',
+        projectsSummary: 'Підсумки проектів',
+        testDetails: 'Деталі тестів',
+        testExecutionTimeline: 'Часова шкала виконання тестів',
+        testSteps: 'Кроки тесту',
+        error: 'Помилка',
+        noFailedTests: '🎉 Немає провалених тестів!',
+        timestamp: 'Час виконання',
+        workers: 'Воркери',
+        nodeVersion: 'Версія Node',
+        playwright: 'Playwright',
+        platform: 'Платформа',
+        environment: 'Середовище',
+        all: 'Всі',
+        search: 'Пошук тестів...',
+        generatedAt: 'Згенеровано',
+        tests: 'тестів',
+      },
+      en: {
+        testReport: 'Test Execution Report',
+        summary: 'TEST EXECUTION SUMMARY',
+        totalTests: 'Total Tests',
+        passed: 'Passed',
+        failed: 'Failed',
+        skipped: 'Skipped',
+        flaky: 'Flaky',
+        duration: 'Duration',
+        passRate: 'Pass Rate',
+        overview: 'Overview',
+        allTests: 'All Tests',
+        failedTests: 'Failed',
+        timeline: 'Timeline',
+        projects: 'By Project',
+        statusDistribution: 'Status Distribution',
+        durationAnalysis: 'Duration Analysis',
+        testsByCategory: 'Tests by Category',
+        passRateTrend: 'Pass Rate Trend',
+        topFilesByTests: 'Top Files by Tests',
+        slowestTests: 'Slowest Tests',
+        projectsSummary: 'Projects Summary',
+        testDetails: 'Test Details',
+        testExecutionTimeline: 'Test Execution Timeline',
+        testSteps: 'Test Steps',
+        error: 'Error',
+        noFailedTests: '🎉 No failed tests!',
+        timestamp: 'Timestamp',
+        workers: 'Workers',
+        nodeVersion: 'Node Version',
+        playwright: 'Playwright',
+        platform: 'Platform',
+        environment: 'Environment',
+        all: 'All',
+        search: 'Search tests...',
+        generatedAt: 'Generated',
+        tests: 'tests',
+      },
+      pl: {
+        testReport: 'Raport wykonania testów',
+        summary: 'PODSUMOWANIE WYKONANIA TESTÓW',
+        totalTests: 'Wszystkie testy',
+        passed: 'Zaliczone',
+        failed: 'Nieudane',
+        skipped: 'Pominięte',
+        flaky: 'Niestabilne',
+        duration: 'Czas trwania',
+        passRate: 'Wskaźnik sukcesu',
+        overview: 'Przegląd',
+        allTests: 'Wszystkie testy',
+        failedTests: 'Nieudane',
+        timeline: 'Oś czasu',
+        projects: 'Według projektów',
+        statusDistribution: 'Rozkład według statusu',
+        durationAnalysis: 'Analiza czasu trwania',
+        testsByCategory: 'Testy według kategorii',
+        passRateTrend: 'Trend wskaźnika sukcesu',
+        topFilesByTests: 'Najważniejsze pliki według testów',
+        slowestTests: 'Najwolniejsze testy',
+        projectsSummary: 'Podsumowanie projektów',
+        testDetails: 'Szczegóły testów',
+        testExecutionTimeline: 'Oś czasu wykonania testów',
+        testSteps: 'Kroki testu',
+        error: 'Błąd',
+        noFailedTests: '🎉 Brak nieudanych testów!',
+        timestamp: 'Znacznik czasu',
+        workers: 'Workery',
+        nodeVersion: 'Wersja Node',
+        playwright: 'Playwright',
+        platform: 'Platforma',
+        environment: 'Środowisko',
+        all: 'Wszystkie',
+        search: 'Szukaj testów...',
+        generatedAt: 'Wygenerowano',
+        tests: 'testów',
+      },
+    };
+    
+    return translations[lang] || translations.uk;
   }
 
   onBegin(config: FullConfig, suite: Suite) {
@@ -208,8 +334,8 @@ class EnterpriseReporter implements Reporter {
       startTime: result.startTime.getTime(),
       endTime: result.startTime.getTime() + result.duration,
       error: result.error ? {
-        message: result.error.message || '',
-        stack: result.error.stack,
+        message: this.stripAnsiCodes(result.error.message || ''),
+        stack: result.error.stack ? this.stripAnsiCodes(result.error.stack) : undefined,
       } : undefined,
       steps,
       annotations: test.annotations,
@@ -270,15 +396,15 @@ class EnterpriseReporter implements Reporter {
 
     // Console summary
     console.log('\n╔═══════════════════════════════════════════════════════╗');
-    console.log('║  📊 TEST EXECUTION SUMMARY                            ║');
+    console.log(`║  📊 ${this.translations.summary}`.padEnd(56) + '║');
     console.log('╠═══════════════════════════════════════════════════════╣');
-    console.log(`║  Total Tests: ${stats.total}`.padEnd(56) + '║');
-    console.log(`║  ✅ Passed: ${stats.passed}`.padEnd(56) + '║');
-    console.log(`║  ❌ Failed: ${stats.failed}`.padEnd(56) + '║');
-    console.log(`║  ⏭️  Skipped: ${stats.skipped}`.padEnd(56) + '║');
-    console.log(`║  🔄 Flaky: ${stats.flaky}`.padEnd(56) + '║');
-    console.log(`║  ⏱️  Duration: ${(duration / 1000).toFixed(2)}s`.padEnd(56) + '║');
-    console.log(`║  📈 Pass Rate: ${stats.passRate.toFixed(1)}%`.padEnd(56) + '║');
+    console.log(`║  ${this.translations.totalTests}: ${stats.total}`.padEnd(56) + '║');
+    console.log(`║  ✅ ${this.translations.passed}: ${stats.passed}`.padEnd(56) + '║');
+    console.log(`║  ❌ ${this.translations.failed}: ${stats.failed}`.padEnd(56) + '║');
+    console.log(`║  ⏭️  ${this.translations.skipped}: ${stats.skipped}`.padEnd(56) + '║');
+    console.log(`║  🔄 ${this.translations.flaky}: ${stats.flaky}`.padEnd(56) + '║');
+    console.log(`║  ⏱️  ${this.translations.duration}: ${(duration / 1000).toFixed(2)}s`.padEnd(56) + '║');
+    console.log(`║  📈 ${this.translations.passRate}: ${stats.passRate.toFixed(1)}%`.padEnd(56) + '║');
     console.log('╚═══════════════════════════════════════════════════════╝\n');
 
     // Generate reports
@@ -292,26 +418,10 @@ class EnterpriseReporter implements Reporter {
 
   private generateHTMLReport(stats: any) {
     const envInfo = this.getEnvironmentInfo();
-    const isDark = this.config.theme === 'dark';
-    const isAuto = this.config.theme === 'auto';
-    
-    // Theme colors
-    const themeVars = isDark ? `
-        --bg-primary: #1f2937;
-        --bg-secondary: #111827;
-        --text-primary: #f9fafb;
-        --text-secondary: #d1d5db;
-        --border-color: #374151;
-    ` : `
-        --bg-primary: #ffffff;
-        --bg-secondary: #f9fafb;
-        --text-primary: #1f2937;
-        --text-secondary: #6b7280;
-        --border-color: #e5e7eb;
-    `;
+    const t = this.translations;
     
     const html = `<!DOCTYPE html>
-<html lang="en">
+<html lang="${this.config.language}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -324,20 +434,12 @@ class EnterpriseReporter implements Reporter {
             --error-color: #ef4444;
             --warning-color: #f59e0b;
             --info-color: #3b82f6;
-            ${themeVars}
+            --bg-primary: #ffffff;
+            --bg-secondary: #f9fafb;
+            --text-primary: #1f2937;
+            --text-secondary: #6b7280;
+            --border-color: #e5e7eb;
         }
-        
-        ${isAuto ? `
-        @media (prefers-color-scheme: dark) {
-            :root {
-                --bg-primary: #1f2937;
-                --bg-secondary: #111827;
-                --text-primary: #f9fafb;
-                --text-secondary: #d1d5db;
-                --border-color: #374151;
-            }
-        }
-        ` : ''}
         
         * {
             margin: 0;
@@ -347,7 +449,7 @@ class EnterpriseReporter implements Reporter {
         
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: ${isDark ? 'linear-gradient(135deg, #1f2937 0%, #111827 100%)' : 'linear-gradient(135deg, var(--primary-color) 0%, #764ba2 100%)'};
+            background: linear-gradient(135deg, var(--primary-color) 0%, #764ba2 100%);
             min-height: 100vh;
             padding: 20px;
             color: var(--text-primary);
@@ -360,7 +462,7 @@ class EnterpriseReporter implements Reporter {
         
         /* Header */
         .report-header {
-            background: var(--bg-primary);
+            background: white;
             border-radius: 16px;
             padding: 40px;
             margin-bottom: 20px;
@@ -371,19 +473,6 @@ class EnterpriseReporter implements Reporter {
         }
         
         .header-left {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            gap: 30px;
-        }
-        
-        .company-logo {
-            max-width: 120px;
-            max-height: 80px;
-            object-fit: contain;
-        }
-        
-        .header-text {
             flex: 1;
         }
         
@@ -442,7 +531,7 @@ class EnterpriseReporter implements Reporter {
         }
         
         .stat-card {
-            background: var(--bg-primary);
+            background: white;
             border-radius: 16px;
             padding: 30px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
@@ -495,7 +584,7 @@ class EnterpriseReporter implements Reporter {
         
         /* Tabs */
         .tabs-container {
-            background: var(--bg-primary);
+            background: white;
             border-radius: 16px;
             margin-bottom: 20px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
@@ -519,12 +608,12 @@ class EnterpriseReporter implements Reporter {
         }
         
         .tab:hover {
-            background: var(--bg-primary);
+            background: white;
             color: var(--primary-color);
         }
         
         .tab.active {
-            background: var(--bg-primary);
+            background: white;
             color: var(--primary-color);
             border-bottom-color: var(--primary-color);
         }
@@ -558,7 +647,7 @@ class EnterpriseReporter implements Reporter {
         }
         
         .chart-card {
-            background: var(--bg-primary);
+            background: white;
             border-radius: 16px;
             padding: 30px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
@@ -693,7 +782,7 @@ class EnterpriseReporter implements Reporter {
         }
         
         .test-item {
-            background: var(--bg-primary);
+            background: white;
             border-radius: 12px;
             padding: 25px;
             margin-bottom: 20px;
@@ -804,6 +893,32 @@ class EnterpriseReporter implements Reporter {
             font-size: 13px;
             white-space: pre-wrap;
             word-break: break-word;
+            line-height: 1.6;
+        }
+        
+        .error-message details {
+            margin-top: 15px;
+        }
+        
+        .error-message summary {
+            cursor: pointer;
+            padding: 8px 12px;
+            background: #fee2e2;
+            border-radius: 6px;
+            transition: background 0.2s;
+        }
+        
+        .error-message summary:hover {
+            background: #fecaca;
+        }
+        
+        .error-message pre {
+            background: #1f2937;
+            color: #fca5a5;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 10px 0 0 0;
         }
         
         .test-steps {
@@ -916,7 +1031,7 @@ class EnterpriseReporter implements Reporter {
         }
         
         .summary-card {
-            background: var(--bg-primary);
+            background: white;
             border-radius: 16px;
             padding: 25px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
@@ -996,16 +1111,18 @@ class EnterpriseReporter implements Reporter {
         <!-- Header -->
         <div class="report-header">
             <div class="header-left">
-                ${this.config.logo ? `<img src="${this.config.logo}" alt="Logo" class="company-logo">` : ''}
-                <div class="header-text">
-                    <div class="company-name">${this.config.companyName}</div>
-                    <h1 class="report-title">${this.config.reportTitle}</h1>
-                    <div class="project-name">${this.config.projectName}</div>
+                ${this.config.logo ? `
+                <div style="margin-bottom: 15px;">
+                    <img src="${this.config.logo}" alt="Company Logo" style="max-height: 60px; max-width: 200px;">
                 </div>
+                ` : ''}
+                <div class="company-name">${this.config.companyName}</div>
+                <h1 class="report-title">${this.config.reportTitle}</h1>
+                <div class="project-name">${this.config.projectName}</div>
             </div>
             <div class="header-right">
                 <div class="pass-rate-circle">${stats.passRate.toFixed(0)}%</div>
-                <div class="pass-rate-label">Pass Rate</div>
+                <div class="pass-rate-label">${t.passRate}</div>
             </div>
         </div>
         
@@ -1014,27 +1131,27 @@ class EnterpriseReporter implements Reporter {
         <div class="env-info">
             <div class="env-grid">
                 <div class="env-item">
-                    <div class="env-label">Timestamp</div>
+                    <div class="env-label">${t.timestamp}</div>
                     <div class="env-value">${envInfo.timestamp}</div>
                 </div>
                 <div class="env-item">
-                    <div class="env-label">Duration</div>
+                    <div class="env-label">${t.duration}</div>
                     <div class="env-value">${(envInfo.duration / 1000).toFixed(2)}s</div>
                 </div>
                 <div class="env-item">
-                    <div class="env-label">Workers</div>
+                    <div class="env-label">${t.workers}</div>
                     <div class="env-value">${envInfo.workers}</div>
                 </div>
                 <div class="env-item">
-                    <div class="env-label">Node Version</div>
+                    <div class="env-label">${t.nodeVersion}</div>
                     <div class="env-value">${envInfo.nodeVersion}</div>
                 </div>
                 <div class="env-item">
-                    <div class="env-label">Playwright</div>
+                    <div class="env-label">${t.playwright}</div>
                     <div class="env-value">${envInfo.playwrightVersion}</div>
                 </div>
                 <div class="env-item">
-                    <div class="env-label">Platform</div>
+                    <div class="env-label">${t.platform}</div>
                     <div class="env-value">${envInfo.os}</div>
                 </div>
             </div>
@@ -1046,32 +1163,32 @@ class EnterpriseReporter implements Reporter {
             <div class="stat-card total">
                 <div class="stat-icon">🧪</div>
                 <div class="stat-value">${stats.total}</div>
-                <div class="stat-label">Total Tests</div>
+                <div class="stat-label">${t.totalTests}</div>
             </div>
             <div class="stat-card passed">
                 <div class="stat-icon">✅</div>
                 <div class="stat-value">${stats.passed}</div>
-                <div class="stat-label">Passed</div>
+                <div class="stat-label">${t.passed}</div>
             </div>
             <div class="stat-card failed">
                 <div class="stat-icon">❌</div>
                 <div class="stat-value">${stats.failed}</div>
-                <div class="stat-label">Failed</div>
+                <div class="stat-label">${t.failed}</div>
             </div>
             <div class="stat-card skipped">
                 <div class="stat-icon">⏭️</div>
                 <div class="stat-value">${stats.skipped}</div>
-                <div class="stat-label">Skipped</div>
+                <div class="stat-label">${t.skipped}</div>
             </div>
             <div class="stat-card flaky">
                 <div class="stat-icon">🔄</div>
                 <div class="stat-value">${stats.flaky}</div>
-                <div class="stat-label">Flaky</div>
+                <div class="stat-label">${t.flaky}</div>
             </div>
             <div class="stat-card duration">
                 <div class="stat-icon">⏱️</div>
                 <div class="stat-value">${(stats.avgDuration / 1000).toFixed(1)}s</div>
-                <div class="stat-label">Avg Duration</div>
+                <div class="stat-label">${t.duration}</div>
             </div>
         </div>
         
@@ -1079,21 +1196,21 @@ class EnterpriseReporter implements Reporter {
         <div class="tabs-container">
             <div class="tabs">
                 <div class="tab active" data-tab="overview">
-                    📊 Overview
+                    📊 ${t.overview}
                 </div>
                 <div class="tab" data-tab="tests">
-                    📝 All Tests
+                    📝 ${t.allTests}
                     <span class="tab-badge">${stats.total}</span>
                 </div>
                 <div class="tab" data-tab="failed">
-                    ❌ Failed
+                    ❌ ${t.failedTests}
                     <span class="tab-badge">${stats.failed}</span>
                 </div>
                 <div class="tab" data-tab="timeline">
-                    ⏱️ Timeline
+                    ⏱️ ${t.timeline}
                 </div>
                 <div class="tab" data-tab="projects">
-                    📦 By Project
+                    📦 ${t.projects}
                 </div>
             </div>
             
@@ -1101,26 +1218,26 @@ class EnterpriseReporter implements Reporter {
             <div class="tab-content active" id="overview">
                 <div class="charts-grid">
                     <div class="chart-card">
-                        <div class="chart-title">📈 Status Distribution</div>
+                        <div class="chart-title">📈 ${t.statusDistribution}</div>
                         <canvas id="statusChart"></canvas>
                     </div>
                     <div class="chart-card">
-                        <div class="chart-title">⏱️ Duration Analysis</div>
+                        <div class="chart-title">⏱️ ${t.durationAnalysis}</div>
                         <canvas id="durationChart"></canvas>
                     </div>
                     <div class="chart-card">
-                        <div class="chart-title">📊 Tests by Category</div>
+                        <div class="chart-title">📊 ${t.testsByCategory}</div>
                         <canvas id="categoryChart"></canvas>
                     </div>
                     <div class="chart-card">
-                        <div class="chart-title">🎯 Pass Rate Trend</div>
+                        <div class="chart-title">🎯 ${t.passRateTrend}</div>
                         <canvas id="trendChart"></canvas>
                     </div>
                 </div>
                 
                 <div class="summary-cards">
                     <div class="summary-card">
-                        <div class="summary-card-title">📂 Top Files by Tests</div>
+                        <div class="summary-card-title">📂 ${t.topFilesByTests}</div>
                         <ul class="summary-list">
                             ${this.getTopFilesByTests(5).map(item => `
                                 <li>
@@ -1131,7 +1248,7 @@ class EnterpriseReporter implements Reporter {
                         </ul>
                     </div>
                     <div class="summary-card">
-                        <div class="summary-card-title">⏱️ Slowest Tests</div>
+                        <div class="summary-card-title">⏱️ ${t.slowestTests}</div>
                         <ul class="summary-list">
                             ${this.getSlowestTests(5).map(test => `
                                 <li>
@@ -1142,12 +1259,12 @@ class EnterpriseReporter implements Reporter {
                         </ul>
                     </div>
                     <div class="summary-card">
-                        <div class="summary-card-title">🎯 Projects Summary</div>
+                        <div class="summary-card-title">🎯 ${t.projectsSummary}</div>
                         <ul class="summary-list">
                             ${Array.from(this.testsByProject.entries()).map(([project, tests]) => `
                                 <li>
                                     <span class="summary-list-label">${project}</span>
-                                    <span class="summary-list-value">${tests.length} tests</span>
+                                    <span class="summary-list-value">${tests.length} ${t.tests}</span>
                                 </li>
                             `).join('')}
                         </ul>
@@ -1158,11 +1275,11 @@ class EnterpriseReporter implements Reporter {
             <!-- All Tests Tab -->
             <div class="tab-content" id="tests">
                 <div class="test-filters">
-                    <input type="text" class="search-box" id="searchBox" placeholder="🔍 Search tests...">
-                    <button class="filter-btn active" data-filter="all">All</button>
-                    <button class="filter-btn" data-filter="passed">Passed</button>
-                    <button class="filter-btn" data-filter="failed">Failed</button>
-                    <button class="filter-btn" data-filter="skipped">Skipped</button>
+                    <input type="text" class="search-box" id="searchBox" placeholder="🔍 ${t.search}">
+                    <button class="filter-btn active" data-filter="all">${t.all}</button>
+                    <button class="filter-btn" data-filter="passed">${t.passed}</button>
+                    <button class="filter-btn" data-filter="failed">${t.failed}</button>
+                    <button class="filter-btn" data-filter="skipped">${t.skipped}</button>
                 </div>
                 
                 <div id="testsContainer">
@@ -1172,11 +1289,11 @@ class EnterpriseReporter implements Reporter {
             
             <!-- Failed Tests Tab -->
             <div class="tab-content" id="failed">
-                ${this.allTests.filter(t => t.status === 'failed').length > 0 ? `
+                ${this.allTests.filter(tt => tt.status === 'failed').length > 0 ? `
                     <div id="failedTestsContainer">
-                        ${this.allTests.filter(t => t.status === 'failed').map(test => this.renderTestItem(test)).join('')}
+                        ${this.allTests.filter(tt => tt.status === 'failed').map(test => this.renderTestItem(test)).join('')}
                     </div>
-                ` : '<p style="text-align: center; color: var(--text-secondary); padding: 40px;">🎉 No failed tests!</p>'}
+                ` : `<p style="text-align: center; color: var(--text-secondary); padding: 40px;">${t.noFailedTests}</p>`}
             </div>
             
             <!-- Timeline Tab -->
@@ -1185,7 +1302,7 @@ class EnterpriseReporter implements Reporter {
                     ${this.allTests
                         .sort((a, b) => b.duration - a.duration)
                         .map(test => {
-                            const maxDuration = Math.max(...this.allTests.map(t => t.duration));
+                            const maxDuration = Math.max(...this.allTests.map(tt => tt.duration));
                             const percentage = (test.duration / maxDuration) * 100;
                             return `
                                 <div class="timeline-item ${test.status}">
@@ -1209,7 +1326,7 @@ class EnterpriseReporter implements Reporter {
                 ${Array.from(this.testsByProject.entries()).map(([project, tests]) => `
                     <div style="margin-bottom: 40px;">
                         <h3 style="margin-bottom: 20px; color: var(--primary-color);">
-                            📦 ${project} (${tests.length} tests)
+                            📦 ${project} (${tests.length} ${t.tests})
                         </h3>
                         ${tests.map(test => this.renderTestItem(test)).join('')}
                     </div>
@@ -1221,6 +1338,7 @@ class EnterpriseReporter implements Reporter {
     <script>
         const testsData = ${JSON.stringify(this.allTests)};
         const stats = ${JSON.stringify(stats)};
+        const translations = ${JSON.stringify(t)};
         
         // Tab switching
         document.querySelectorAll('.tab').forEach(tab => {
@@ -1239,7 +1357,7 @@ class EnterpriseReporter implements Reporter {
         new Chart(document.getElementById('statusChart'), {
             type: 'doughnut',
             data: {
-                labels: ['Passed', 'Failed', 'Skipped', 'Flaky'],
+                labels: [translations.passed, translations.failed, translations.skipped, translations.flaky],
                 datasets: [{
                     data: [stats.passed, stats.failed, stats.skipped, stats.flaky],
                     backgroundColor: ['#10b981', '#ef4444', '#f59e0b', '#8b5cf6'],
@@ -1270,7 +1388,7 @@ class EnterpriseReporter implements Reporter {
             data: {
                 labels: sortedTests.map(t => t.title.substring(0, 25)),
                 datasets: [{
-                    label: 'Duration (s)',
+                    label: translations.duration + ' (s)',
                     data: sortedTests.map(t => (t.duration / 1000).toFixed(2)),
                     backgroundColor: sortedTests.map(t => 
                         t.status === 'passed' ? '#10b981' : t.status === 'failed' ? '#ef4444' : '#f59e0b'
@@ -1281,7 +1399,7 @@ class EnterpriseReporter implements Reporter {
                 indexAxis: 'y',
                 responsive: true,
                 plugins: { legend: { display: false } },
-                scales: { x: { beginAtZero: true, title: { display: true, text: 'Seconds' } } }
+                scales: { x: { beginAtZero: true, title: { display: true, text: translations.duration } } }
             }
         });
         
@@ -1312,7 +1430,7 @@ class EnterpriseReporter implements Reporter {
             data: {
                 labels: ['Run 1', 'Run 2', 'Run 3', 'Run 4', 'Current'],
                 datasets: [{
-                    label: 'Pass Rate %',
+                    label: translations.passRate + ' %',
                     data: [85, 88, 90, 87, stats.passRate],
                     borderColor: '#667eea',
                     backgroundColor: 'rgba(102, 126, 234, 0.1)',
@@ -1324,7 +1442,7 @@ class EnterpriseReporter implements Reporter {
                 responsive: true,
                 plugins: { legend: { display: false } },
                 scales: {
-                    y: { beginAtZero: true, max: 100, title: { display: true, text: 'Pass Rate %' } }
+                    y: { beginAtZero: true, max: 100, title: { display: true, text: translations.passRate + ' %' } }
                 }
             }
         });
@@ -1363,6 +1481,7 @@ class EnterpriseReporter implements Reporter {
 
   private renderTestItem(test: TestData): string {
     const screenshots = test.attachments.filter(a => a.contentType.startsWith('image/'));
+    const t = this.translations;
     
     return `
         <div class="test-item ${test.status}" data-status="${test.status}">
@@ -1386,14 +1505,20 @@ class EnterpriseReporter implements Reporter {
             
             ${test.error ? `
                 <div class="test-error">
-                    <div class="error-title">❌ Error</div>
-                    <div class="error-message">${this.escapeHtml(test.error.message)}</div>
+                    <div class="error-title">❌ ${t.error}</div>
+                    <div class="error-message">${this.cleanErrorMessage(test.error.message)}</div>
+                    ${test.error.stack ? `
+                    <details style="margin-top: 10px;">
+                        <summary style="cursor: pointer; color: #991b1b; font-weight: 600;">Stack Trace</summary>
+                        <pre style="margin-top: 10px; font-size: 12px; overflow-x: auto;">${this.cleanErrorMessage(test.error.stack)}</pre>
+                    </details>
+                    ` : ''}
                 </div>
             ` : ''}
             
             ${test.steps.length > 0 ? `
                 <div class="test-steps">
-                    <div class="steps-title">📋 Test Steps</div>
+                    <div class="steps-title">📋 ${t.testSteps}</div>
                     ${test.steps.map(step => `
                         <div class="step-item">
                             <span class="step-title">${this.escapeHtml(step.title)}</span>
@@ -1503,6 +1628,18 @@ ${this.getSlowestTests(10).map((test, i) =>
       "'": '&#039;',
     };
     return text.replace(/[&<>"']/g, m => map[m]);
+  }
+  
+  private stripAnsiCodes(text: string): string {
+    // Remove ANSI escape codes (colors, formatting, etc.)
+    // eslint-disable-next-line no-control-regex
+    return text.replace(/\u001b\[\d+m/g, '')
+               .replace(/\u001b\[[\d;]+m/g, '')
+               .replace(/[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g, '');
+  }
+  
+  private cleanErrorMessage(text: string): string {
+    return this.escapeHtml(this.stripAnsiCodes(text));
   }
 
   private truncate(text: string, length: number): string {
