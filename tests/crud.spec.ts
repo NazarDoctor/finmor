@@ -512,4 +512,4 @@ test.describe.serial('WordPress Posts API - Performance Tests', () => {
       expect(result.time).toBeLessThan(3000);
     });
   });
-});
+n});

@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Playwright Reporter Setup</title>
     <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
         * {
             margin: 0;
             padding: 0;
@@ -425,6 +429,42 @@
             transform: translateX(0);
         }
         
+        .language-selector {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            display: flex;
+            gap: 8px;
+            background: white;
+            padding: 8px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        .lang-btn {
+            padding: 8px 16px;
+            border: 2px solid transparent;
+            background: transparent;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s;
+            color: #6b7280;
+        }
+        
+        .lang-btn:hover {
+            background: #f3f4f6;
+            color: #667eea;
+        }
+        
+        .lang-btn.active {
+            background: var(--primary-gradient);
+            color: white;
+            border-color: transparent;
+        }
+        
         @keyframes fadeInDown {
             from {
                 opacity: 0;
@@ -476,85 +516,91 @@
     </style>
 </head>
 <body>
+    <div class="language-selector">
+        <button class="lang-btn active" onclick="setLanguage('uk')" data-lang="uk">🇺🇦 UA</button>
+        <button class="lang-btn" onclick="setLanguage('en')" data-lang="en">🇬🇧 EN</button>
+        <button class="lang-btn" onclick="setLanguage('pl')" data-lang="pl">🇵🇱 PL</button>
+    </div>
+    
     <div class="container">
         <div class="header">
             <div class="logo">🎭</div>
-            <h1>Playwright Reporter Setup</h1>
-            <div class="subtitle">Створіть свій власний репортер за 4 кроки</div>
+            <h1 data-i18n="title">Playwright Reporter Setup</h1>
+            <div class="subtitle" data-i18n="subtitle">Створіть свій власний репортер за 4 кроки</div>
         </div>
         
         <div class="wizard-container">
             <div class="progress-bar">
                 <div class="progress-step active" data-step="1">
                     <div class="step-circle">1</div>
-                    <div class="step-label">Основне</div>
+                    <div class="step-label" data-i18n="step1">Основне</div>
                 </div>
                 <div class="progress-step" data-step="2">
                     <div class="step-circle">2</div>
-                    <div class="step-label">Дизайн</div>
+                    <div class="step-label" data-i18n="step2">Дизайн</div>
                 </div>
                 <div class="progress-step" data-step="3">
                     <div class="step-circle">3</div>
-                    <div class="step-label">Налаштування</div>
+                    <div class="step-label" data-i18n="step3">Налаштування</div>
                 </div>
                 <div class="progress-step" data-step="4">
                     <div class="step-circle">4</div>
-                    <div class="step-label">Завершення</div>
+                    <div class="step-label" data-i18n="step4">Завершення</div>
                 </div>
             </div>
             
             <div class="step-content">
                 <!-- Step 1: Basic Info -->
                 <div class="step active" data-step="1">
-                    <h2 class="step-title">🏢 Основна інформація</h2>
-                    <p class="step-description">Розкажіть нам про ваш проект</p>
+                    <h2 class="step-title">🏢 <span data-i18n="basic_info">Основна інформація</span></h2>
+                    <p class="step-description" data-i18n="basic_desc">Розкажіть нам про ваш проект</p>
                     
                     <div class="form-group">
-                        <label for="companyName">Назва компанії</label>
-                        <input type="text" id="companyName" placeholder="Наприклад: Acme Corp" value="Моя Компанія">
+                        <label for="companyName" data-i18n="company_name">Назва компанії</label>
+                        <input type="text" id="companyName" data-i18n-placeholder="company_placeholder" placeholder="Наприклад: Acme Corp" value="Моя Компанія">
                     </div>
                     
                     <div class="form-group">
-                        <label for="projectName">Назва проекту</label>
-                        <input type="text" id="projectName" placeholder="Наприклад: E2E Test Suite" value="Test Suite">
+                        <label for="projectName" data-i18n="project_name">Назва проекту</label>
+                        <input type="text" id="projectName" data-i18n-placeholder="project_placeholder" placeholder="Наприклад: E2E Test Suite" value="Test Suite">
                     </div>
                     
                     <div class="form-group">
-                        <label for="reportTitle">Заголовок звіту</label>
-                        <input type="text" id="reportTitle" placeholder="Наприклад: Test Execution Report" value="Test Execution Report">
+                        <label for="reportTitle" data-i18n="report_title">Заголовок звіту</label>
+                        <input type="text" id="reportTitle" data-i18n-placeholder="report_placeholder" placeholder="Наприклад: Test Execution Report" value="Test Execution Report">
                     </div>
                     
                     <div class="form-group">
-                        <label for="outputDir">Папка для звітів</label>
-                        <input type="text" id="outputDir" placeholder="Наприклад: test-results/my-report" value="test-results/enterprise-report">
+                        <label for="outputDir" data-i18n="output_dir">Папка для звітів</label>
+                        <input type="text" id="outputDir" data-i18n-placeholder="output_placeholder" placeholder="Наприклад: test-results/my-report" value="test-results/enterprise-report">
                     </div>
                 </div>
                 
                 <!-- Step 2: Design -->
                 <div class="step" data-step="2">
-                    <h2 class="step-title">🎨 Дизайн та брендинг</h2>
-                    <p class="step-description">Налаштуйте зовнішній вигляд вашого репортера</p>
+                    <h2 class="step-title">🎨 <span data-i18n="design_branding">Дизайн та брендинг</span></h2>
+                    <p class="step-description" data-i18n="design_desc">Налаштуйте зовнішній вигляд вашого репортера</p>
                     
                     <div class="form-group">
-                        <label>Тема оформлення</label>
+                        <label data-i18n="theme_label">Тема оформлення</label>
                         <div class="theme-selector">
                             <div class="theme-card selected" data-theme="light">
                                 <div class="theme-icon">☀️</div>
-                                <div class="theme-name">Світла</div>
+                                <div class="theme-name" data-i18n="theme_light">Світла</div>
                             </div>
                             <div class="theme-card" data-theme="dark">
                                 <div class="theme-icon">🌙</div>
-                                <div class="theme-name">Темна</div>
+                                <div class="theme-name" data-i18n="theme_dark">Темна</div>
                             </div>
                             <div class="theme-card" data-theme="auto">
                                 <div class="theme-icon">🌓</div>
-                                <div class="theme-name">Авто</div>
+                                <div class="theme-name" data-i18n="theme_auto">Авто</div>
                             </div>
                         </div>
                     </div>
                     
                     <div class="form-group">
-                        <label for="primaryColor">Основний колір</label>
+                        <label for="primaryColor" data-i18n="primary_color">Основний колір</label>
                         <div class="color-input-group">
                             <input type="color" id="primaryColor" value="#667eea">
                             <div class="color-preview" id="colorPreview">#667eea</div>
@@ -562,15 +608,20 @@
                     </div>
                     
                     <div class="form-group">
-                        <label for="logoUpload">Логотип компанії (опціонально)</label>
-                        <div class="file-upload-wrapper">
-                            <input type="file" id="logoUpload" accept="image/*" style="display: none;">
-                            <button type="button" class="file-upload-btn" onclick="document.getElementById('logoUpload').click()">
-                                📤 Завантажити логотип
+                        <label for="logoUpload" data-i18n="company_logo">Лого компанії</label>
+                        <div style="display: flex; gap: 15px; align-items: center;">
+                            <input type="file" id="logoUpload" accept="image/*" style="display: none;" onchange="handleLogoUpload(event)">
+                            <button class="btn-secondary" onclick="document.getElementById('logoUpload').click()" style="flex: 1;">
+                                <span data-i18n="upload_logo">📤 Завантажити лого</span>
                             </button>
-                            <div id="logoPreview" class="logo-preview" style="display: none;">
-                                <img id="logoImage" src="" alt="Logo">
-                                <button type="button" class="remove-logo-btn" onclick="removeLogo()">✕</button>
+                            <button class="btn-secondary" onclick="clearLogo()" id="clearLogoBtn" style="display: none;">
+                                <span data-i18n="clear_logo">🗑️ Очистити</span>
+                            </button>
+                        </div>
+                        <div id="logoPreview" style="margin-top: 15px; display: none;">
+                            <div style="background: #f9fafb; border-radius: 12px; padding: 20px; text-align: center;">
+                                <img id="logoImage" style="max-width: 200px; max-height: 100px; border-radius: 8px;">
+                                <div style="margin-top: 10px; font-size: 13px; color: #6b7280;" id="logoName"></div>
                             </div>
                         </div>
                     </div>
@@ -578,37 +629,37 @@
                 
                 <!-- Step 3: Settings -->
                 <div class="step" data-step="3">
-                    <h2 class="step-title">⚙️ Налаштування</h2>
-                    <p class="step-description">Оберіть, що включати в звіт</p>
+                    <h2 class="step-title">⚙️ <span data-i18n="settings">Налаштування</span></h2>
+                    <p class="step-description" data-i18n="settings_desc">Оберіть, що включати в звіт</p>
                     
                     <div class="form-group">
-                        <label>Що показувати в звіті?</label>
+                        <label data-i18n="what_show">Що показувати в звіті?</label>
                         <div class="checkbox-group">
                             <div class="checkbox-item">
                                 <input type="checkbox" id="showPassed" checked>
-                                <label for="showPassed">✅ Пройдені тести</label>
+                                <label for="showPassed" data-i18n="passed_tests">✅ Пройдені тести</label>
                             </div>
                             <div class="checkbox-item">
                                 <input type="checkbox" id="showSkipped" checked>
-                                <label for="showSkipped">⏭️ Пропущені тести</label>
+                                <label for="showSkipped" data-i18n="skipped_tests">⏭️ Пропущені тести</label>
                             </div>
                             <div class="checkbox-item">
                                 <input type="checkbox" id="showEnvInfo" checked>
-                                <label for="showEnvInfo">💻 Інфо про систему</label>
+                                <label for="showEnvInfo" data-i18n="env_info">💻 Інфо про систему</label>
                             </div>
                         </div>
                     </div>
                     
                     <div class="form-group">
-                        <label>Що включати в звіт?</label>
+                        <label data-i18n="what_include">Що включати в звіт?</label>
                         <div class="checkbox-group">
                             <div class="checkbox-item">
                                 <input type="checkbox" id="includeScreenshots" checked>
-                                <label for="includeScreenshots">📸 Скріншоти</label>
+                                <label for="includeScreenshots" data-i18n="screenshots">📸 Скріншоти</label>
                             </div>
                             <div class="checkbox-item">
                                 <input type="checkbox" id="includeVideos" checked>
-                                <label for="includeVideos">🎥 Відео</label>
+                                <label for="includeVideos" data-i18n="videos">🎥 Відео</label>
                             </div>
                             <div class="checkbox-item">
                                 <input type="checkbox" id="includeTraces" checked>
@@ -618,7 +669,7 @@
                     </div>
                     
                     <div class="preview-section">
-                        <div class="preview-title">👁️ Попередній перегляд конфігурації</div>
+                        <div class="preview-title" data-i18n="config_preview">👁️ Попередній перегляд конфігурації</div>
                         <div class="config-preview" id="configPreview"></div>
                     </div>
                 </div>
@@ -627,44 +678,51 @@
                 <div class="step" data-step="4">
                     <div class="final-step">
                         <div class="success-icon">🎉</div>
-                        <h2 class="step-title">Готово!</h2>
-                        <p class="step-description">Ваш репортер налаштовано. Завантажте файли конфігурації</p>
+                        <h2 class="step-title" data-i18n="ready">Готово!</h2>
+                        <p class="step-description" data-i18n="ready_desc">Ваш репортер налаштовано. Завантажте файли конфігурації</p>
                         
                         <div class="download-section">
                             <div class="download-card" onclick="downloadReporter()">
                                 <div class="download-icon">📦</div>
                                 <div class="download-title">custom-reporter.ts</div>
-                                <div class="download-desc">Основний файл репортера</div>
+                                <div class="download-desc" data-i18n="reporter_file">Основний файл репортера</div>
                             </div>
                             <div class="download-card" onclick="downloadConfig()">
                                 <div class="download-icon">⚙️</div>
                                 <div class="download-title">playwright.config.ts</div>
-                                <div class="download-desc">Файл конфігурації</div>
+                                <div class="download-desc" data-i18n="config_file">Файл конфігурації</div>
                             </div>
                             <div class="download-card" onclick="copyToClipboard()">
                                 <div class="download-icon">📋</div>
-                                <div class="download-title">Копіювати конфіг</div>
-                                <div class="download-desc">У буфер обміну</div>
+                                <div class="download-title" data-i18n="copy_config">Копіювати конфіг</div>
+                                <div class="download-desc" data-i18n="to_clipboard">У буфер обміну</div>
                             </div>
+                            ${logoData ? `
+                            <div class="download-card" onclick="downloadLogo()">
+                                <div class="download-icon">✅</div>
+                                <div class="download-title" data-i18n="logo_encoded">Лого закодовано</div>
+                                <div class="download-desc" data-i18n="logo_in_config">У конфігурації</div>
+                            </div>
+                            ` : ''}
                         </div>
                         
                         <div class="preview-section">
-                            <div class="preview-title">📝 Інструкція з встановлення</div>
-                            <div class="config-preview">
-<span class="config-key"># 1. Збережіть файли в корені проекту</span>
+                            <div class="preview-title" data-i18n="install_guide">📝 Інструкція з встановлення</div>
+                            <div class="config-preview" id="installInstructions">
+<span class="config-key"># 1. <span data-i18n="inst_1">Збережіть файли в корені проекту</span></span>
 - custom-reporter.ts
 - playwright.config.ts
 
-<span class="config-key"># 2. Встановіть Playwright (якщо ще не встановлено)</span>
+<span class="config-key"># 2. <span data-i18n="inst_2">Встановіть Playwright (якщо ще не встановлено)</span></span>
 npm install --save-dev @playwright/test
 
-<span class="config-key"># 3. Запустіть тести</span>
+<span class="config-key"># 3. <span data-i18n="inst_3">Запустіть тести</span></span>
 npx playwright test
 
-<span class="config-key"># 4. Відкрийте звіт</span>
+<span class="config-key"># 4. <span data-i18n="inst_4">Відкрийте звіт</span></span>
 open <span class="config-string">${document.getElementById('outputDir')?.value || 'test-results/enterprise-report'}</span>/index.html
 
-<span class="config-key"># Готово! 🎉</span>
+<span class="config-key"># <span data-i18n="inst_5">Готово!</span> 🎉</span>
                             </div>
                         </div>
                     </div>
@@ -672,10 +730,10 @@ open <span class="config-string">${document.getElementById('outputDir')?.value |
                 
                 <div class="buttons">
                     <button class="btn-secondary" id="prevBtn" onclick="previousStep()" style="display: none;">
-                        ← Назад
+                        <span data-i18n="btn_back">← Назад</span>
                     </button>
                     <button class="btn-primary" id="nextBtn" onclick="nextStep()">
-                        Далі →
+                        <span data-i18n="btn_next">Далі →</span>
                     </button>
                 </div>
             </div>
@@ -683,21 +741,260 @@ open <span class="config-string">${document.getElementById('outputDir')?.value |
     </div>
     
     <div class="copy-notification" id="notification">
-        ✅ Скопійовано в буфер обміну!
+        <span data-i18n="copied">✅ Скопійовано в буфер обміну!</span>
     </div>
     
     <script>
+        // Translations
+        const translations = {
+            uk: {
+                title: 'Playwright Reporter Setup',
+                subtitle: 'Створіть свій власний репортер за 4 кроки',
+                step1: 'Основне',
+                step2: 'Дизайн',
+                step3: 'Налаштування',
+                step4: 'Завершення',
+                basic_info: 'Основна інформація',
+                basic_desc: 'Розкажіть нам про ваш проект',
+                company_name: 'Назва компанії',
+                company_placeholder: 'Наприклад: Acme Corp',
+                project_name: 'Назва проекту',
+                project_placeholder: 'Наприклад: E2E Test Suite',
+                report_title: 'Заголовок звіту',
+                report_placeholder: 'Наприклад: Test Execution Report',
+                output_dir: 'Папка для звітів',
+                output_placeholder: 'Наприклад: test-results/my-report',
+                design_branding: 'Дизайн та брендинг',
+                design_desc: 'Налаштуйте зовнішній вигляд вашого репортера',
+                theme_label: 'Тема оформлення',
+                theme_light: 'Світла',
+                theme_dark: 'Темна',
+                theme_auto: 'Авто',
+                primary_color: 'Основний колір',
+                company_logo: 'Лого компанії',
+                upload_logo: '📤 Завантажити лого',
+                clear_logo: '🗑️ Очистити',
+                settings: 'Налаштування',
+                settings_desc: 'Оберіть, що включати в звіт',
+                what_show: 'Що показувати в звіті?',
+                passed_tests: '✅ Пройдені тести',
+                skipped_tests: '⏭️ Пропущені тести',
+                env_info: '💻 Інфо про систему',
+                what_include: 'Що включати в звіт?',
+                screenshots: '📸 Скріншоти',
+                videos: '🎥 Відео',
+                config_preview: '👁️ Попередній перегляд конфігурації',
+                ready: 'Готово!',
+                ready_desc: 'Ваш репортер налаштовано. Завантажте файли конфігурації',
+                reporter_file: 'Основний файл репортера',
+                config_file: 'Файл конфігурації',
+                copy_config: 'Копіювати конфіг',
+                to_clipboard: 'У буфер обміну',
+                install_guide: '📝 Інструкція з встановлення',
+                inst_1: 'Збережіть файли в корені проекту',
+                inst_2: 'Встановіть Playwright (якщо ще не встановлено)',
+                inst_3: 'Запустіть тести',
+                inst_4: 'Відкрийте звіт',
+                inst_5: 'Готово!',
+                btn_back: '← Назад',
+                btn_next: 'Далі →',
+                btn_finish: 'Завершити 🎉',
+                copied: '✅ Скопійовано в буфер обміну!',
+                downloaded: '✅ Файл завантажено!',
+                setup_complete: '🎉 Налаштування завершено!',
+                logo_file: 'Файл лого',
+                logo_encoded: 'Лого закодовано',
+                logo_in_config: 'У конфігурації',
+            },
+            en: {
+                title: 'Playwright Reporter Setup',
+                subtitle: 'Create your own reporter in 4 steps',
+                step1: 'Basic',
+                step2: 'Design',
+                step3: 'Settings',
+                step4: 'Finish',
+                basic_info: 'Basic Information',
+                basic_desc: 'Tell us about your project',
+                company_name: 'Company Name',
+                company_placeholder: 'e.g., Acme Corp',
+                project_name: 'Project Name',
+                project_placeholder: 'e.g., E2E Test Suite',
+                report_title: 'Report Title',
+                report_placeholder: 'e.g., Test Execution Report',
+                output_dir: 'Output Directory',
+                output_placeholder: 'e.g., test-results/my-report',
+                design_branding: 'Design & Branding',
+                design_desc: 'Customize the look of your reporter',
+                theme_label: 'Theme',
+                theme_light: 'Light',
+                theme_dark: 'Dark',
+                theme_auto: 'Auto',
+                primary_color: 'Primary Color',
+                company_logo: 'Company Logo',
+                upload_logo: '📤 Upload Logo',
+                clear_logo: '🗑️ Clear',
+                settings: 'Settings',
+                settings_desc: 'Choose what to include in the report',
+                what_show: 'What to show in the report?',
+                passed_tests: '✅ Passed Tests',
+                skipped_tests: '⏭️ Skipped Tests',
+                env_info: '💻 System Info',
+                what_include: 'What to include in the report?',
+                screenshots: '📸 Screenshots',
+                videos: '🎥 Videos',
+                config_preview: '👁️ Configuration Preview',
+                ready: 'Ready!',
+                ready_desc: 'Your reporter is configured. Download the configuration files',
+                reporter_file: 'Main reporter file',
+                config_file: 'Configuration file',
+                copy_config: 'Copy Config',
+                to_clipboard: 'To clipboard',
+                install_guide: '📝 Installation Guide',
+                inst_1: 'Save files in project root',
+                inst_2: 'Install Playwright (if not already installed)',
+                inst_3: 'Run tests',
+                inst_4: 'Open report',
+                inst_5: 'Done!',
+                btn_back: '← Back',
+                btn_next: 'Next →',
+                btn_finish: 'Finish 🎉',
+                copied: '✅ Copied to clipboard!',
+                downloaded: '✅ File downloaded!',
+                setup_complete: '🎉 Setup complete!',
+                logo_file: 'Logo file',
+                logo_encoded: 'Logo Encoded',
+                logo_in_config: 'In configuration',
+            },
+            pl: {
+                title: 'Playwright Reporter Setup',
+                subtitle: 'Utwórz własny reporter w 4 krokach',
+                step1: 'Podstawy',
+                step2: 'Design',
+                step3: 'Ustawienia',
+                step4: 'Zakończenie',
+                basic_info: 'Podstawowe informacje',
+                basic_desc: 'Powiedz nam o swoim projekcie',
+                company_name: 'Nazwa firmy',
+                company_placeholder: 'np. Acme Corp',
+                project_name: 'Nazwa projektu',
+                project_placeholder: 'np. E2E Test Suite',
+                report_title: 'Tytuł raportu',
+                report_placeholder: 'np. Test Execution Report',
+                output_dir: 'Katalog raportów',
+                output_placeholder: 'np. test-results/my-report',
+                design_branding: 'Design i branding',
+                design_desc: 'Dostosuj wygląd swojego reportera',
+                theme_label: 'Motyw',
+                theme_light: 'Jasny',
+                theme_dark: 'Ciemny',
+                theme_auto: 'Auto',
+                primary_color: 'Kolor główny',
+                company_logo: 'Logo firmy',
+                upload_logo: '📤 Prześlij logo',
+                clear_logo: '🗑️ Wyczyść',
+                settings: 'Ustawienia',
+                settings_desc: 'Wybierz, co uwzględnić w raporcie',
+                what_show: 'Co pokazać w raporcie?',
+                passed_tests: '✅ Zaliczone testy',
+                skipped_tests: '⏭️ Pominięte testy',
+                env_info: '💻 Info systemowe',
+                what_include: 'Co dołączyć do raportu?',
+                screenshots: '📸 Zrzuty ekranu',
+                videos: '🎥 Wideo',
+                config_preview: '👁️ Podgląd konfiguracji',
+                ready: 'Gotowe!',
+                ready_desc: 'Twój reporter jest skonfigurowany. Pobierz pliki konfiguracyjne',
+                reporter_file: 'Główny plik reportera',
+                config_file: 'Plik konfiguracyjny',
+                copy_config: 'Kopiuj konfigurację',
+                to_clipboard: 'Do schowka',
+                install_guide: '📝 Instrukcja instalacji',
+                inst_1: 'Zapisz pliki w katalogu głównym projektu',
+                inst_2: 'Zainstaluj Playwright (jeśli jeszcze nie jest zainstalowany)',
+                inst_3: 'Uruchom testy',
+                inst_4: 'Otwórz raport',
+                inst_5: 'Gotowe!',
+                btn_back: '← Wstecz',
+                btn_next: 'Dalej →',
+                btn_finish: 'Zakończ 🎉',
+                copied: '✅ Skopiowano do schowka!',
+                downloaded: '✅ Plik pobrany!',
+                setup_complete: '🎉 Konfiguracja zakończona!',
+                logo_file: 'Plik logo',
+                logo_encoded: 'Logo zakodowane',
+                logo_in_config: 'W konfiguracji',
+            }
+        };
+        
+        let currentLanguage = 'uk';
+        let logoData = null;
+        let logoFileName = '';
+        
+        function handleLogoUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            logoFileName = file.name;
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                logoData = e.target.result;
+                
+                // Show preview
+                document.getElementById('logoPreview').style.display = 'block';
+                document.getElementById('logoImage').src = logoData;
+                document.getElementById('logoName').textContent = logoFileName;
+                document.getElementById('clearLogoBtn').style.display = 'block';
+                
+                showNotification(translations[currentLanguage].downloaded || '✅ Logo uploaded!');
+            };
+            
+            reader.readAsDataURL(file);
+        }
+        
+        function clearLogo() {
+            logoData = null;
+            logoFileName = '';
+            document.getElementById('logoPreview').style.display = 'none';
+            document.getElementById('logoUpload').value = '';
+            document.getElementById('clearLogoBtn').style.display = 'none';
+            showNotification('🗑️ ' + (currentLanguage === 'uk' ? 'Лого видалено' : 
+                              currentLanguage === 'en' ? 'Logo cleared' : 'Logo usunięte'));
+        }
+        
+        function setLanguage(lang) {
+            currentLanguage = lang;
+            
+            // Update active button
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.lang === lang);
+            });
+            
+            // Update all translatable elements
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (translations[lang][key]) {
+                    el.textContent = translations[lang][key];
+                }
+            });
+            
+            // Update placeholders
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+                const key = el.getAttribute('data-i18n-placeholder');
+                if (translations[lang][key]) {
+                    el.placeholder = translations[lang][key];
+                }
+            });
+        }
+        
         let currentStep = 1;
         const totalSteps = 4;
-        let selectedTheme = 'light';
-        let logoBase64 = null;
         
         // Theme selection
         document.querySelectorAll('.theme-card').forEach(card => {
             card.addEventListener('click', function() {
                 document.querySelectorAll('.theme-card').forEach(c => c.classList.remove('selected'));
                 this.classList.add('selected');
-                selectedTheme = this.dataset.theme;
             });
         });
         
@@ -707,28 +1004,6 @@ open <span class="config-string">${document.getElementById('outputDir')?.value |
             document.getElementById('colorPreview').style.background = e.target.value;
             document.getElementById('colorPreview').style.color = 'white';
         });
-        
-        // Logo upload
-        document.getElementById('logoUpload').addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file && file.type.startsWith('image/')) {
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    logoBase64 = event.target.result;
-                    document.getElementById('logoImage').src = logoBase64;
-                    document.getElementById('logoPreview').style.display = 'block';
-                    showNotification('✅ Логотип завантажено!');
-                };
-                reader.readAsDataURL(file);
-            }
-        });
-        
-        function removeLogo() {
-            logoBase64 = null;
-            document.getElementById('logoUpload').value = '';
-            document.getElementById('logoPreview').style.display = 'none';
-            showNotification('🗑️ Логотип видалено');
-        }
         
         function updateProgress() {
             document.querySelectorAll('.progress-step').forEach((step, index) => {
@@ -746,7 +1021,8 @@ open <span class="config-string">${document.getElementById('outputDir')?.value |
             
             // Update buttons
             document.getElementById('prevBtn').style.display = currentStep === 1 ? 'none' : 'block';
-            document.getElementById('nextBtn').textContent = currentStep === totalSteps ? 'Завершити 🎉' : 'Далі →';
+            const nextBtnText = currentStep === totalSteps ? translations[currentLanguage].btn_finish : translations[currentLanguage].btn_next;
+            document.getElementById('nextBtn').querySelector('[data-i18n]').textContent = nextBtnText;
             
             // Update config preview
             if (currentStep === 3) {
@@ -756,7 +1032,7 @@ open <span class="config-string">${document.getElementById('outputDir')?.value |
         
         function nextStep() {
             if (currentStep === totalSteps) {
-                showNotification('🎉 Налаштування завершено!');
+                showNotification(translations[currentLanguage].setup_complete);
                 return;
             }
             
@@ -776,26 +1052,36 @@ open <span class="config-string">${document.getElementById('outputDir')?.value |
         }
         
         function getConfig() {
+            const theme = document.querySelector('.theme-card.selected')?.dataset.theme || 'light';
+            
             return {
                 outputDir: document.getElementById('outputDir').value,
                 reportTitle: document.getElementById('reportTitle').value,
                 companyName: document.getElementById('companyName').value,
                 projectName: document.getElementById('projectName').value,
-                theme: selectedTheme,
+                theme: theme,
                 primaryColor: document.getElementById('primaryColor').value,
-                logo: logoBase64,
                 showPassedTests: document.getElementById('showPassed').checked,
                 showSkippedTests: document.getElementById('showSkipped').checked,
                 showEnvironmentInfo: document.getElementById('showEnvInfo').checked,
                 includeScreenshots: document.getElementById('includeScreenshots').checked,
                 includeVideos: document.getElementById('includeVideos').checked,
                 includeTraces: document.getElementById('includeTraces').checked,
+                logo: logoData,
+                logoFileName: logoFileName,
+                language: currentLanguage,
             };
         }
         
         function updateConfigPreview() {
             const config = getConfig();
             const preview = document.getElementById('configPreview');
+            
+            let logoPreview = '';
+            if (config.logo) {
+                const shortLogo = config.logo.substring(0, 50) + '...';
+                logoPreview = `  <span class="config-key">logo:</span> <span class="config-string">'${shortLogo}'</span>,`;
+            }
             
             preview.innerHTML = `<span class="config-key">const</span> reporterConfig = {
   <span class="config-key">outputDir:</span> <span class="config-string">'${config.outputDir}'</span>,
@@ -804,6 +1090,8 @@ open <span class="config-string">${document.getElementById('outputDir')?.value |
   <span class="config-key">projectName:</span> <span class="config-string">'${config.projectName}'</span>,
   <span class="config-key">theme:</span> <span class="config-string">'${config.theme}'</span>,
   <span class="config-key">primaryColor:</span> <span class="config-string">'${config.primaryColor}'</span>,
+  <span class="config-key">language:</span> <span class="config-string">'${config.language}'</span>,
+${logoPreview}
   <span class="config-key">showPassedTests:</span> ${config.showPassedTests},
   <span class="config-key">showSkippedTests:</span> ${config.showSkippedTests},
   <span class="config-key">showEnvironmentInfo:</span> ${config.showEnvironmentInfo},
@@ -816,6 +1104,17 @@ open <span class="config-string">${document.getElementById('outputDir')?.value |
         function generateConfigFile() {
             const config = getConfig();
             
+            // Generate logo code if present
+            let logoCode = '';
+            if (config.logo) {
+                logoCode = `  // Logo encoded as base64 data URL
+  logo: '${config.logo}',`;
+            } else {
+                logoCode = `  // logo: './assets/logo.png', // Path to your logo file
+  // OR use base64 encoded image:
+  // logo: 'data:image/png;base64,iVBORw0KGgo...',`;
+            }
+            
             return `import { defineConfig } from '@playwright/test';
 import type { ReporterConfig } from './custom-reporter';
 
@@ -825,8 +1124,9 @@ const reporterConfig: ReporterConfig = {
   companyName: '${config.companyName}',
   projectName: '${config.projectName}',
   theme: '${config.theme}',
-  primaryColor: '${config.primaryColor}',${config.logo ? `
-  logo: '${config.logo.substring(0, 100)}...', // Base64 logo (скорочено для відображення)` : ''}
+  primaryColor: '${config.primaryColor}',
+  language: '${config.language}',
+${logoCode}
   showPassedTests: ${config.showPassedTests},
   showSkippedTests: ${config.showSkippedTests},
   showEnvironmentInfo: ${config.showEnvironmentInfo},
@@ -856,81 +1156,45 @@ export default defineConfig({
 });`;
         }
         
-        function generateFullConfigFile() {
-            const config = getConfig();
-            
-            return `import { defineConfig } from '@playwright/test';
-import type { ReporterConfig } from './custom-reporter';
-
-const reporterConfig: ReporterConfig = {
-  outputDir: '${config.outputDir}',
-  reportTitle: '${config.reportTitle}',
-  companyName: '${config.companyName}',
-  projectName: '${config.projectName}',
-  theme: '${config.theme}',
-  primaryColor: '${config.primaryColor}',${config.logo ? `
-  logo: '${config.logo}',` : ''}
-  showPassedTests: ${config.showPassedTests},
-  showSkippedTests: ${config.showSkippedTests},
-  showEnvironmentInfo: ${config.showEnvironmentInfo},
-  includeScreenshots: ${config.includeScreenshots},
-  includeVideos: ${config.includeVideos},
-  includeTraces: ${config.includeTraces},
-  testCategories: ['smoke', 'regression', 'integration', 'e2e'],
-};
-
-export default defineConfig({
-  testDir: './tests',
-  timeout: 30000,
-  workers: process.env.CI ? 2 : undefined,
-  retries: process.env.CI ? 2 : 0,
-  
-  reporter: [
-    ['./custom-reporter.ts', reporterConfig],
-    ['html'],
-    ['list'],
-  ],
-  
-  projects: [
-    {
-      name: 'chromium',
-      use: {
-        screenshot: 'only-on-failure',
-        video: 'retain-on-failure',
-        trace: 'retain-on-failure',
-      },
-    },
-    {
-      name: 'firefox',
-      use: {
-        screenshot: 'only-on-failure',
-        video: 'retain-on-failure',
-      },
-    },
-    {
-      name: 'webkit',
-      use: {
-        screenshot: 'only-on-failure',
-      },
-    },
-  ],
-});`;
-        }
-        
         function downloadConfig() {
-            const content = generateFullConfigFile();
+            const content = generateConfigFile();
             downloadFile('playwright.config.ts', content);
-            showNotification('✅ playwright.config.ts завантажено!');
+            showNotification(translations[currentLanguage].downloaded);
         }
         
         function downloadReporter() {
-            showNotification('ℹ️ Використовуйте custom-reporter.ts з попереднього артефакту');
+            const message = currentLanguage === 'uk' ? 
+                'ℹ️ Використовуйте custom-reporter.ts з попереднього артефакту' : 
+                currentLanguage === 'en' ? 
+                'ℹ️ Use custom-reporter.ts from previous artifact' :
+                'ℹ️ Użyj custom-reporter.ts z poprzedniego artefaktu';
+            showNotification(message);
+        }
+        
+        function downloadLogo() {
+            if (!logoData) {
+                const message = currentLanguage === 'uk' ? 
+                    '⚠️ Спочатку завантажте лого' : 
+                    currentLanguage === 'en' ? 
+                    '⚠️ Please upload a logo first' :
+                    '⚠️ Najpierw prześlij logo';
+                showNotification(message);
+                return;
+            }
+            
+            // No need to download separately - it's already in the config!
+            const message = currentLanguage === 'uk' ? 
+                '✅ Лого вже закодовано в конфігурації!' : 
+                currentLanguage === 'en' ? 
+                '✅ Logo is already encoded in the config!' :
+                '✅ Logo jest już zakodowane w konfiguracji!';
+            showNotification(message);
         }
         
         function copyToClipboard() {
-            const content = generateFullConfigFile();
+            const content = generateConfigFile();
             navigator.clipboard.writeText(content).then(() => {
-                showNotification('✅ Конфігурація скопійована!');
+                showNotification(translations[currentLanguage].copied);
             });
         }
         
